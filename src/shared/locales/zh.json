@@ -1,0 +1,37 @@
+{
+  "language": {
+    "zh": "中文",
+    "en": "English",
+    "jp": "日本語"
+  },
+  "error": {
+    "title": "加载失败",
+    "message": "加载飞书SDK时发生错误，请刷新页面重试",
+    "reload": "重新加载"
+  },
+  "contentPreview": {
+    "empty": "无内容可预览",
+    "copy": "复制内容"
+  },
+  "copy": {
+    "success": "复制成功",
+    "error": "复制失败，请重试"
+  },
+  "controlBar": {
+    "output": "输出结果"
+  },
+  "footer": {
+    "exportPdf": "导出为PDF",
+    "exportPdfButton": "导出PDF",
+    "wordCount": "字",
+    "readingTime": "阅读时间",
+    "minutes": "分钟"
+  },
+  "official": {
+    "doclink": "官方文档"
+  },
+  "report": {
+    "name": "姓名",
+    "title": "评估报告"
+  }
+} 

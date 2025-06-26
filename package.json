@@ -1,0 +1,67 @@
+{
+  "name": "preview-puls",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "output": "dist",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@douyinfe/semi-ui": "^2.75.0",
+    "@lark-base-open/js-sdk": "^0.4.0",
+    "@react-pdf/renderer": "^4.3.0",
+    "@types/marked": "^4.3.2",
+    "clipboard-copy": "^4.0.1",
+    "clsx": "^2.1.1",
+    "es-toolkit": "^1.32.0",
+    "html2pdf.js": "^0.10.3",
+    "i18next": "^24.2.2",
+    "katex": "^0.16.21",
+    "lucide-react": "^0.477.0",
+    "marked": "^4.3.0",
+    "mermaid": "^11.6.0",
+    "prismjs": "^1.30.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-i18next": "^15.4.1",
+    "react-icons": "^5.5.0",
+    "react-markdown": "^10.0.0",
+    "rehype-katex": "^7.0.1",
+    "rehype-raw": "^7.0.0",
+    "remark-breaks": "^4.0.0",
+    "remark-gfm": "^4.0.1",
+    "remark-math": "^6.0.0",
+    "sonner": "^2.0.1",
+    "tailwind-merge": "^3.0.2"
+  },
+  "devDependencies": {
+    "@douyinfe/semi-webpack-plugin": "^2.75.0",
+    "@tailwindcss/typography": "^0.5.16",
+    "@types/mermaid": "^9.2.0",
+    "@types/react": "^18.2.14",
+    "@types/react-dom": "^18.2.6",
+    "@typescript-eslint/eslint-plugin": "^5.61.0",
+    "@typescript-eslint/parser": "^5.61.0",
+    "@vitejs/plugin-react-swc": "^3.3.2",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.44.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.1",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "@swc/core",
+      "core-js",
+      "esbuild"
+    ]
+  }
+}

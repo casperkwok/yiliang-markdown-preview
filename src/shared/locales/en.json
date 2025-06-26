@@ -1,0 +1,37 @@
+{
+  "language": {
+    "zh": "中文",
+    "en": "English",
+    "jp": "日本語"
+  },
+  "error": {
+    "title": "Loading Failed",
+    "message": "Error loading Feishu SDK, please refresh the page",
+    "reload": "Reload"
+  },
+  "contentPreview": {
+    "empty": "No content to preview",
+    "copy": "Copy content"
+  },
+  "copy": {
+    "success": "Copy successful",
+    "error": "Copy failed, please try again"
+  },
+  "controlBar": {
+    "output": "Output"
+  },
+  "footer": {
+    "exportPdf": "Export as PDF",
+    "exportPdfButton": "Export PDF",
+    "wordCount": "words",
+    "readingTime": "reading time",
+    "minutes": "minutes"
+  },
+  "official": {
+    "doclink": "Official documentation"
+  },
+  "report": {
+    "name": "Name",
+    "title": "Assessment Report"
+  }
+} 

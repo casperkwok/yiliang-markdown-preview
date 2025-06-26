@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    /* 中英文环境字体 */
+    --font-family-base: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Tahoma, 'PingFang SC', 'Microsoft Yahei', Arial, 'Hiragino Sans GB', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    
+    /* 日文环境字体 */
+    --font-family-jp: "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "Yu Gothic UI", "游ゴシック体", "Noto Sans Japanese", "Microsoft Jhenghei UI", "Microsoft Yahei UI", "ＭＳ Ｐゴシック", Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    
+    /* 默认使用中英文字体 */
+    font-family: var(--font-family-base);
+    line-height: 1.5;
+    font-weight: 400;
+    
+    /* 主题变量 - 默认浅色主题 */
+    /* --app-bg-color: #ffffff;
+    --app-text-color: #213547;
+    --app-border-color: #dee0e3;
+    --app-primary-color: #333333;
+    --app-secondary-bg: #f5f5f5;
+    --app-card-bg: #ffffff;
+    --app-hover-bg: #f0f0f0;
+     */
+    /* 主题切换器位置变量 */
+    --theme-switcher-top: 2.5rem;
+}
+
+/* 防止滚动条出现/消失导致的页面抖动 - 只在html根元素应用 */
+html {
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  color: var(--app-text-color);
+  background-color: var(--app-bg-color);
+  transition: color 0.3s, background-color 0.3s;
+}
+
+/* 日文语言环境下使用日文字体 */
+:lang(ja) {
+  font-family: var(--font-family-jp);
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
