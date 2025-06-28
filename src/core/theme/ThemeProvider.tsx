@@ -35,13 +35,13 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
         '--app-hover-bg': '#f0f0f0',
       },
       DARK: {
-        '--app-bg-color': '#ffffff',
-        '--app-text-color': '#213547',
-        '--app-border-color': '#dee0e3',
-        '--app-primary-color': '#333333',
-        '--app-secondary-bg': '#f5f5f5',
-        '--app-card-bg': '#ffffff',
-        '--app-hover-bg': '#f0f0f0',
+        '--app-bg-color': '#1a1a1a',
+        '--app-text-color': '#ffffff',
+        '--app-border-color': '#333333',
+        '--app-primary-color': '#ffffff',
+        '--app-secondary-bg': '#2a2a2a',
+        '--app-card-bg': '#262626',
+        '--app-hover-bg': '#3a3a3a',
       }
     };
     

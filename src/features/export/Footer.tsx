@@ -8,6 +8,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCopyToClipboard } from './useCopyToClipboard';
+import { useBaseSelection } from '../../core/bitable';
 import { IoTime } from 'react-icons/io5';
 import html2pdf from 'html2pdf.js';
 import { FiDownload } from 'react-icons/fi';
@@ -24,6 +25,7 @@ export const Footer: React.FC<FooterProps> = ({
 }) => {
     const { t } = useTranslation();
     const { handleCopy } = useCopyToClipboard();
+    const { selection, currentIndex } = useBaseSelection();
     
     return (
         <footer className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-gray-200 bg-opacity-100">
@@ -55,49 +57,20 @@ export const Footer: React.FC<FooterProps> = ({
                         onClick={() => {
                             const element = document.getElementById('preview-content');
                             if (element) {
-                                let reportName: string | null = null;
-                                try {
-                                    // Updated logic: Find the <strong> tag containing "姓名"
-                                    const strongElements = element.querySelectorAll('strong');
-                                    let name = '';
-                                    strongElements.forEach(strong => {
-                                        if (strong.textContent?.includes(t('report.name'))) {
-                                            // Get the innerHTML of the parent <p> element
-                                            const parentParagraph = strong.parentElement;
-                                            if (parentParagraph && parentParagraph.tagName === 'P') {
-                                                const paragraphHtml = parentParagraph.innerHTML;
-                                                // Use regex to extract name between : and <br>
-                                                // Matches ": " followed by any characters (non-greedy) until the first "<br>"
-                                                const match = paragraphHtml.match(/:\s*([^<]+?)\s*<br>/i);
-                                                if (match && match[1]) {
-                                                    name = match[1].trim();
-                                                }
-                                            }
-                                        }
-                                    });
-                                    
-                                    if (name) {
-                                        // Sanitize the name for filename (remove invalid characters)
-                                        reportName = name.replace(/[/\\?%*:|"<>]/g, '-');
-                                    } else {
-                                        console.warn('Could not automatically extract report name using the new logic. Using default filename format.');
-                                    }
-                                } catch (error) {
-                                    console.error('Error extracting report name:', error);
-                                }
-
-                                // Get current date and time
+                                // Get current date
                                 const now = new Date();
-                                const timestamp = now.getFullYear().toString() +
-                                                (now.getMonth() + 1).toString().padStart(2, '0') +
-                                                now.getDate().toString().padStart(2, '0') + '_' +
-                                                now.getHours().toString().padStart(2, '0') +
-                                                now.getMinutes().toString().padStart(2, '0') +
-                                                now.getSeconds().toString().padStart(2, '0');
+                                const dateStr = now.getFullYear().toString() +
+                                              (now.getMonth() + 1).toString().padStart(2, '0') +
+                                              now.getDate().toString().padStart(2, '0');
                                 
-                                // Construct filename
-                                const baseFilename = reportName ? `${t('report.title')}_${reportName}` : t('report.title');
-                                const dynamicFilename = `${baseFilename}_${timestamp}.pdf`;
+                                // Construct filename with format: 字段名_行_日期.pdf
+                                const fieldName = selection.fieldName || '报告';
+                                const rowNumber = currentIndex >= 0 ? (currentIndex + 1) : 1;
+                                
+                                // Sanitize field name for filename (remove invalid characters)
+                                const sanitizedFieldName = fieldName.replace(/[/\\?%*:|"<>]/g, '-');
+                                
+                                const dynamicFilename = `${sanitizedFieldName}_${rowNumber}_${dateStr}.pdf`;
 
                                 // Configuration options for html2pdf
                                 const opt = {
@@ -105,7 +78,8 @@ export const Footer: React.FC<FooterProps> = ({
                                     filename:     dynamicFilename, // Use dynamic filename
                                     image:        { type: 'jpeg', quality: 0.98 },
                                     html2canvas:  { scale: 2, useCORS: true },
-                                    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+                                    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
+                                    pagebreak:    { mode: 'css', before: '.page-break-before' }
                                 };
                                 // Use html2pdf to save the element as PDF
                                 void html2pdf().set(opt).from(element).save();
@@ -123,4 +97,4 @@ export const Footer: React.FC<FooterProps> = ({
             </div>
         </footer>
     );
-}; 
+};

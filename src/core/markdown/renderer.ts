@@ -23,6 +23,12 @@ export class MarkdownRenderer {
         color: this.options.base?.themeColor
       }
       const styleStr = cssPropertiesToString(style)
+      
+      // For h3, prepend a character to act as a robust vertical bar
+      if (level === 3) {
+        text = `▍ ${text}`
+      }
+      
       return `<h${level}${styleStr ? ` style="${styleStr}"` : ''}>${text}</h${level}>`
     }
 

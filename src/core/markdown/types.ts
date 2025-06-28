@@ -47,6 +47,9 @@ export interface StyleOptions {
   background?: string
   backgroundColor?: string
   backgroundImage?: string
+  backgroundRepeat?: string
+  backgroundSize?: string
+  backgroundPosition?: string
   
   // List
   listStyle?: string
@@ -59,6 +62,7 @@ export interface StyleOptions {
   flexDirection?: string
   flexWrap?: string
   gap?: string
+  pageBreakInside?: 'auto' | 'avoid'
   
   // Other
   opacity?: number

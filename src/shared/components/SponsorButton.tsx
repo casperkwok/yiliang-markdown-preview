@@ -7,7 +7,7 @@ const SponsorButton: React.FC = () => {
     return (
         <>
             <a 
-                href="https://o1ttnutoycv.feishu.cn/docx/Ppe6dlw2hoOktxxa82HcvCtonsc?from=from_copylink"
+                href="https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=3cbueaf7-a6b9-44ca-96eb-d490646326c5"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-3 py-1.5 bg-indigo-500 text-white font-bold rounded-md hover:bg-indigo-600 transition-colors text-xs flex items-center"
@@ -22,4 +22,4 @@ const SponsorButton: React.FC = () => {
     );
 };
 
-export default SponsorButton; 
+export default SponsorButton;

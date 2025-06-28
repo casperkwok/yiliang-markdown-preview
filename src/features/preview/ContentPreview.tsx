@@ -64,4 +64,4 @@ const ContentPreview: React.FC<ContentPreviewProps> = ({
     );
 };
 
-export default ContentPreview; 
+export default ContentPreview;

@@ -30,7 +30,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
     return (
         <div className="fixed top-0 left-0 right-0 z-50">
-            <nav className="bg-[#f6f8fe] dark:bg-gray-800 px-4 py-2">
+            <nav className="bg-app-card px-4 py-2">
                 <div className="container mx-auto flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                         <img src={logo} alt="Logo" className="h-6 w-auto" />
@@ -39,7 +39,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </div>
             </nav>
             
-            <div className="flex justify-between items-center bg-white border-b border-app px-4 py-2">
+            <div className="flex justify-between items-center bg-app-card border-b border-app px-4 py-2">
                 <span className="text-sm text-app opacity-70">
                     当前 <span className="font-bold text-indigo-600">{selection.fieldName || 'AI 评估报告'}</span>
                     {currentIndex > -1 && (

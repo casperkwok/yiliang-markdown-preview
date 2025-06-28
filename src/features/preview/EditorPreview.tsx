@@ -38,7 +38,7 @@ export function EditorPreview({
       id="preview-content"
       ref={previewRef}
       className={cn(
-        "preview-container bg-background h-full w-full flex flex-col",
+        "preview-container bg-white h-full w-full flex flex-col",
         "markdown-body relative",
         selectedTemplate && templates.find(t => t.id === selectedTemplate)?.styles,
         `code-theme-${codeTheme}`
@@ -57,8 +57,7 @@ export function EditorPreview({
         ) : (
           <div 
             className={cn(
-              "preview-content py-4 px-6 w-full",
-              "prose prose-slate dark:prose-slate max-w-none",
+              "preview-content py-4 px-6 w-full max-w-none",
               selectedTemplate && templates.find(t => t.id === selectedTemplate)?.styles
             )}
             dangerouslySetInnerHTML={{ __html: cleanedContent }}
@@ -67,4 +66,4 @@ export function EditorPreview({
       </div>
     </div>
   )
-} 
+}

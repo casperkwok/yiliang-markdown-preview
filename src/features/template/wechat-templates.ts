@@ -18,7 +18,7 @@ export const templates: Template[] = [
     options: {
         base: {
             themeColor: 'var(--themeColor, rgb(0, 0, 0))',
-            fontFamily: '-apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif',
+            fontFamily: '\'Source Han Sans\', -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif',
             textAlign: 'left',
             lineHeight: '2',
             padding: '1rem 1.5rem',
@@ -29,39 +29,44 @@ export const templates: Template[] = [
             fontSize: '15px',
             color: '#333'
           },
-          block: {    // 一级标题
+          block: {                // 一级标题
             h1: {
-              display: 'table',
-              padding: '0 1em',
+              display: 'block',
+              padding: '0 1em 0.5em 1em',
               borderBottom: '2px solid var(--themeColor)',
               margin: '2em auto 1em',
               color: 'var(--themeColor)',
               fontSize: '1.2em',
               fontWeight: 'bold',
-              textAlign: 'center'
+              textAlign: 'center',
+              textDecoration: 'none',
+              pageBreakInside: 'avoid'
             },
         
             // 二级标题
             h2: {
-              display: 'table',
-              padding: '0 0.2em',
+              display: 'block',
+              padding: '0 0.2em 0.5em 0.2em',
               margin: '2em auto 2em',
               color: 'var(--themeColor)',
               borderBottom: '2px solid var(--themeColor)',
               fontSize: '1.2em',
               fontWeight: 'bold',
-              textAlign: 'center'
+              textAlign: 'center',
+              textDecoration: 'none',
+              pageBreakInside: 'avoid'
             },
         
             // 三级标题
             h3: {
-              paddingLeft: '8px',
-              borderLeft: '3px solid var(--themeColor)',
+              paddingLeft: '12px',
+              borderLeft: '4px solid var(--themeColor)',
               margin: '2em 8px 0.75em 0',
               color: 'var(--themeColor)',
               fontSize: '1.1em',
               fontWeight: 'bold',
-              lineHeight: '1.2'
+              lineHeight: '1.2',
+              pageBreakInside: 'avoid'
             },
         
             // 四级标题
@@ -70,6 +75,7 @@ export const templates: Template[] = [
               'color': `var(--themeColor)`,
               'fontSize': `1em`,
               'fontWeight': `bold`,
+              pageBreakInside: 'avoid'
             },
         
             // 五级标题
@@ -78,6 +84,7 @@ export const templates: Template[] = [
               'color': `var(--themeColor)`,
               'fontSize': `1em`,
               'fontWeight': `bold`,
+              pageBreakInside: 'avoid'
             },
         
             // 六级标题
@@ -85,6 +92,7 @@ export const templates: Template[] = [
               'margin': `1.5em 8px 0.5em`,
               'fontSize': `1em`,
               'color': `var(--themeColor)`,
+              pageBreakInside: 'avoid'
             },
         
             // 段落
@@ -94,6 +102,7 @@ export const templates: Template[] = [
               'letterSpacing': `0.1em`,
               'color': `hsl(var(--foreground))`,
               'textAlign': `justify`,
+              pageBreakInside: 'avoid'
             },
         
             // 引用
@@ -104,7 +113,8 @@ export const templates: Template[] = [
               borderRadius: '6px',
               color: 'rgba(0,0,0,0.5)',
               background: 'var(--blockquote-background)',
-              margin: '0 0 1em 0'
+              margin: '0 0 1em 0',
+              pageBreakInside: 'avoid'
             },
         
             // 代码块
@@ -115,6 +125,7 @@ export const templates: Template[] = [
               'padding': `1em`,
               'lineHeight': `1.5`,
               'margin': `10px 8px`,
+              pageBreakInside: 'avoid'
             },
         
             // 行内代码
@@ -174,7 +185,8 @@ export const templates: Template[] = [
             listitem: {
               display: 'block',
               margin: '0.2em 8px',
-              color: 'hsl(var(--foreground))'
+              color: 'hsl(var(--foreground))',
+              pageBreakInside: 'avoid'
             },
         
             codespan: {

@@ -58,11 +58,10 @@ export const usePreviewContent = ({
         h3: {
           ...(template?.options?.block?.h3 || {}),
           ...(styleOptions.block?.h3 || {}),
-          fontSize: styleOptions.block?.h3?.fontSize || template?.options?.block?.h3?.fontSize || '1.1em',
           color: styleOptions.base?.themeColor || template?.options?.base?.themeColor || '#1a1a1a',
-          ...(template?.options?.block?.h3?.borderLeft && {
-            borderLeft: `3px solid ${styleOptions.base?.themeColor || template?.options?.base?.themeColor || '#1a1a1a'}`
-          })
+          fontSize: '1.1em',
+          fontWeight: 'bold',
+          lineHeight: '1.5',
         },
         p: {
           ...(template?.options?.block?.p || {}),

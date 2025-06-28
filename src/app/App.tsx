@@ -23,7 +23,7 @@ function App() {
   if (error) {
     return (
       <TemplateProvider>
-        <div className={`min-h-screen flex flex-col text-app bg-app`} data-theme={theme.toLowerCase()}>
+        <div className={`h-screen w-screen flex flex-col text-app bg-app`} data-theme={theme.toLowerCase()}>
           <Toaster position="top-center" richColors={true} />
           <ErrorContent message={error.message || t('error.message')} />
         </div>
@@ -33,7 +33,7 @@ function App() {
 
   return (
     <TemplateProvider>
-      <div className={`min-h-screen flex flex-col text-app bg-app`} data-theme={theme.toLowerCase()}>
+      <div className={`h-screen w-screen flex flex-col text-app bg-app`} data-theme={theme.toLowerCase()}>
         <Toaster position="top-center" richColors={true} />
         
         {/* 导航栏 */}
@@ -45,7 +45,7 @@ function App() {
         
         {/* 主要内容 */}
         <main className="flex-1 bg-app-secondary overflow-auto">
-          <div className="container mx-auto h-full">
+          <div className="w-full h-full">
             {loading ? (
               <ContentSkeleton />
             ) : (
