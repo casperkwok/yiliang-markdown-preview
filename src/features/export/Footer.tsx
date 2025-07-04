@@ -64,7 +64,7 @@ export const Footer: React.FC<FooterProps> = ({
                                               now.getDate().toString().padStart(2, '0');
                                 
                                 // Construct filename with format: 字段名_行_日期.pdf
-                                const fieldName = selection.fieldName || '报告';
+                                const fieldName = selection.fieldName || t('common.report');
                                 const rowNumber = currentIndex >= 0 ? (currentIndex + 1) : 1;
                                 
                                 // Sanitize field name for filename (remove invalid characters)
@@ -88,10 +88,10 @@ export const Footer: React.FC<FooterProps> = ({
                             }
                         }}
                         className="h-8 px-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-700 text-white rounded shadow-md hover:shadow-lg active:shadow transform active:translate-y-0.5 transition-all flex items-center justify-center text-xs"
-                        title={t('footer.exportPdf', 'Export as PDF')}
+                        title={t('footer.exportPdf')}
                     >
                         <FiDownload className="w-4 h-4 mr-1" />
-                        {t('footer.exportPdfButton', '导出PDF')}
+                        {t('footer.exportPdfButton')}
                     </button>
                 </div>
             </div>

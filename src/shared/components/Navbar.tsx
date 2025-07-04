@@ -5,10 +5,12 @@
  * @version 1.0.0
  * @description 导航栏组件 - 简化版
  */
-import React from "react";
+import React, { useMemo } from "react";
+import { useTranslation } from 'react-i18next';
 import { useBaseSelection } from "../../core/bitable";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import logo from "../../assets/logo.svg";
+import logoEn from "../../assets/logo_en.svg";
 import SponsorButton from "./SponsorButton";
 
 type NavbarProps = {
@@ -22,7 +24,15 @@ export const Navbar: React.FC<NavbarProps> = ({
     currentIndex = -1, 
     onSwitchRecord 
 }) => {
+    const { t, i18n } = useTranslation();
     const { selection } = useBaseSelection();
+
+    // 根据当前语言选择对应的logo
+    const currentLogo = useMemo(() => {
+        const currentLanguage = i18n.language;
+        // 当语言为en或ja时使用英文logo，其他情况使用中文logo
+        return (currentLanguage === 'en' || currentLanguage === 'ja') ? logoEn : logo;
+    }, [i18n.language]);
 
     // 计算当前导航状态
     const isFirstRecord = currentIndex === 0;
@@ -33,7 +43,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <nav className="bg-app-card px-4 py-2">
                 <div className="container mx-auto flex items-center justify-between">
                     <div className="flex items-center space-x-4">
-                        <img src={logo} alt="Logo" className="h-6 w-auto" />
+                        <img src={currentLogo} alt="Logo" className="h-6 w-auto" />
                     </div>
                     <SponsorButton />
                 </div>
@@ -41,9 +51,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             
             <div className="flex justify-between items-center bg-app-card border-b border-app px-4 py-2">
                 <span className="text-sm text-app opacity-70">
-                    当前 <span className="font-bold text-indigo-600">{selection.fieldName || 'AI 评估报告'}</span>
+                    {t('navbar.current')} <span className="font-bold text-indigo-600">{selection.fieldName || t('navbar.defaultTitle')}</span>
                     {currentIndex > -1 && (
-                        <> - 第 <span className="font-bold text-indigo-600">{currentIndex + 1}</span> 行</>
+                        <> - {t('navbar.number')}<span className="font-bold text-indigo-600">{currentIndex + 1}</span> {t('navbar.row')}</>
                     )}
                 </span>
 

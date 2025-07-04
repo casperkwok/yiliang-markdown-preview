@@ -2,12 +2,18 @@
   "language": {
     "zh": "中文",
     "en": "English",
-    "jp": "日本語"
+    "ja": "日本語"
   },
   "error": {
     "title": "加载失败",
     "message": "加载飞书SDK时发生错误，请刷新页面重试",
     "reload": "重新加载"
+  },
+  "load_error": {
+    "1": "加载超时，请检查网络连接或加入官方群获取帮助。"
+  },
+  "load": {
+    "guide": "查看使用指南"
   },
   "contentPreview": {
     "empty": "无内容可预览",
@@ -33,5 +39,14 @@
   "report": {
     "name": "姓名",
     "title": "评估报告"
+  },
+  "navbar": {
+    "current": "当前",
+    "defaultTitle": "AI 评估报告",
+    "row": "行",
+    "number": "第"
+  },
+  "common": {
+    "report": "报告"
   }
 }

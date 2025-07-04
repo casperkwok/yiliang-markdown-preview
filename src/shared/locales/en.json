@@ -2,12 +2,18 @@
   "language": {
     "zh": "中文",
     "en": "English",
-    "jp": "日本語"
+    "ja": "日本語"
   },
   "error": {
     "title": "Loading Failed",
     "message": "Error loading Feishu SDK, please refresh the page",
     "reload": "Reload"
+  },
+  "load_error": {
+    "1": "Loading timeout, please check your network connection or join the official group for help."
+  },
+  "load": {
+    "guide": "view usage guide"
   },
   "contentPreview": {
     "empty": "No content to preview",
@@ -33,5 +39,14 @@
   "report": {
     "name": "Name",
     "title": "Assessment Report"
+  },
+  "navbar": {
+    "current": "Current",
+    "defaultTitle": "AI Assessment Report",
+    "row": "row",
+    "number": ""
+  },
+  "common": {
+    "report": "Report"
   }
 }
