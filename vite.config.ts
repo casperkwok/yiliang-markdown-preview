@@ -1,99 +1,81 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
-import { splitVendorChunkPlugin } from 'vite'
+import tailwindcss from '@tailwindcss/vite'
 
-// https://vitejs.dev/config/
+// https://vite.dev/config/
 export default defineConfig({
-  base: './', 
-  plugins: [react(), splitVendorChunkPlugin()],
+  base: './',   
+  plugins: [
+    react(),
+    tailwindcss(),
+  ],
+  resolve: {
+    alias: {
+      '@': '/src'
+    }
+  },
   build: {
+    // Increase the chunk size warning limit to 1000kb
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
-          // 将node_modules中的代码分割成不同的chunk
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('scheduler') || id.includes('prop-types')) {
-              return 'react-vendor';
-            }
-            if (id.includes('react-markdown') || id.includes('remark') || id.includes('unified') || id.includes('micromark')) {
-              return 'markdown-vendor';
-            }
-            if (id.includes('react-icons')) {
-              return 'icons-vendor';
-            }
-            if (id.includes('@lark-base-open')) {
-              return 'lark-vendor';
-            }
-            if (id.includes('sonner')) {
-              return 'ui-vendor';
-            }
-            // 其他第三方库
-            return 'vendor';
-          }
+        manualChunks: {
+          // React core
+          'react-vendor': ['react', 'react-dom'],
           
-          // 将组件按功能分组
-          if (id.includes('/components/')) {
-            if (id.includes('MarkdownRenderer') || id.includes('ContentPreview')) {
-              return 'content-components';
-            }
-            return 'ui-components';
-          }
+          // Milkdown editor - group all milkdown packages
+          'milkdown': [
+            '@milkdown/core',
+            '@milkdown/ctx',
+            '@milkdown/plugin-block',
+            '@milkdown/plugin-clipboard',
+            '@milkdown/plugin-cursor',
+            '@milkdown/plugin-emoji',
+            '@milkdown/plugin-history',
+            '@milkdown/plugin-indent',
+            '@milkdown/plugin-listener',
+            '@milkdown/plugin-prism',
+            '@milkdown/plugin-slash',
+            '@milkdown/plugin-tooltip',
+            '@milkdown/plugin-upload',
+            '@milkdown/preset-commonmark',
+            '@milkdown/preset-gfm',
+            '@milkdown/prose',
+            '@milkdown/react',
+            '@milkdown/theme-nord',
+            '@milkdown/utils'
+          ],
           
-          // 将hooks分组
-          if (id.includes('/hooks/')) {
-            return 'hooks';
-          }
+          // Diagram and math rendering
+          'diagram-math': ['mermaid', 'katex'],
           
-          // 将工具函数分组
-          if (id.includes('/utils/')) {
-            return 'utils';
-          }
+          // PDF generation
+          'pdf-vendor': ['html2pdf.js'],
+          
+          // Markdown processing
+          'markdown-vendor': [
+            'marked',
+            'react-markdown',
+            'remark-breaks',
+            'remark-gfm',
+            'remark-math',
+            'rehype-katex',
+            'rehype-raw'
+          ],
+          
+          // Syntax highlighting
+          'syntax-vendor': ['prismjs'],
+          
+          // UI and icons
+          'ui-vendor': ['react-icons', '@tailwindcss/typography'],
+          
+          // Internationalization
+          'i18n-vendor': ['i18next', 'react-i18next'],
+          
+          // Lark SDK
+          'lark-vendor': ['@lark-base-open/js-sdk']
         }
       }
-    },
-    // 提高警告阈值，避免不必要的警告 - 增加到1000KB
-    chunkSizeWarningLimit: 1000,
-    // 启用源码映射，方便调试
-    sourcemap: true,
-    // 压缩选项
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,  // 移除console
-        drop_debugger: true,  // 移除debugger
-        pure_funcs: ['console.log', 'console.info', 'console.debug'] // 移除特定的函数调用
-      },
-      mangle: {
-        safari10: true // 兼容Safari 10
-      },
-      format: {
-        comments: false // 移除注释
-      }
-    },
-    // 启用CSS代码分割
-    cssCodeSplit: true,
-    // 启用CSS压缩
-    cssMinify: true,
-    // 资源处理
-    assetsInlineLimit: 4096, // 小于4kb的资源内联为base64
-  },
-  // 优化开发体验
-  optimizeDeps: {
-    include: ['react', 'react-dom', 'sonner']
-  },
-  // 服务器配置
-  server: {
-    hmr: true,
-    open: true,
-    // 允许的主机名
-    allowedHosts: true
-  },
-  // 预览配置
-  preview: {
-    allowedHosts: [
-      "preview.miaoruzhi.com",
-      "miaoruzhi.com",
-      ".miaoruzhi.com" // 允许所有子域名
-    ]
+    }
   }
 })

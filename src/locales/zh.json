@@ -1,0 +1,61 @@
+{
+  "common": {
+    "loading": "正在加载内容...",
+    "error": "错误",
+    "unknownError": "出现了未知错误",
+    "noContent": "暂无内容预览",
+    "selectCell": "请选择一个单元格查看其内容",
+    "loadingError": "加载内容时出错",
+    "selectCellPlaceholder": "请选择单元格"
+  },
+  "footer": {
+    "edit": "编辑",
+    "copy": "复制",
+    "export": "导出",
+    "cancel": "取消",
+    "save": "保存",
+    "saving": "保存中",
+    "saved": "已保存",
+    "copied": "已复制",
+    "exported": "已导出",
+    "failed": "失败",
+    "editMode": "编辑模式",
+    "characters": "字",
+    "editContent": "编辑内容",
+    "copyContent": "复制内容到剪贴板",
+    "exportPDF": "导出为PDF文件",
+    "cancelEdit": "取消编辑",
+    "saveContent": "保存内容"
+  },
+  "editor": {
+    "placeholder": "开始编辑 Markdown 内容..."
+  },
+  "sponsor": {
+    "officialDocs": "官方群",
+    "viewDocs": "加入官方群"
+  },
+  "navbar": {
+    "current": "当前",
+    "selectField": "请选择字段",
+    "row": "行",
+    "prevRecord": "上一条记录",
+    "nextRecord": "下一条记录"
+  },
+  "errors": {
+    "processingMarkdown": "处理 Markdown 内容时出错",
+    "copyFailed": "复制失败，请重试",
+    "copySuccess": "内容已复制到剪贴板",
+    "exportFailed": "导出失败，请重试",
+    "exportSuccess": "PDF 导出成功",
+    "saveFailed": "保存失败，请重试",
+    "saveSuccess": "内容保存成功",
+    "getCellContent": "获取单元格内容时出错",
+    "updateCellContent": "更新单元格内容失败",
+    "getFieldName": "获取字段名称时出错",
+    "getRecordIds": "获取记录ID失败",
+    "noSelectedCell": "未选择要更新的单元格",
+    "allCopyMethodsFailed": "所有复制方法都失败了",
+    "copyOperationFailed": "复制操作失败",
+    "contentNotFound": "未找到要复制的内容"
+  }
+} 

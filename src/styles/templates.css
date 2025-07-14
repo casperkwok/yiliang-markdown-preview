@@ -1,0 +1,309 @@
+/* Base markdown preview styles */
+.markdown-preview {
+  --theme-color: #333;
+  --text-color: #333;
+  --blockquote-background: #f8f9fa;
+  --font-size: 15px;
+  background-color: #ffffff !important;
+}
+
+.markdown-preview.dark {
+  --theme-color: #ffffff;
+  --text-color: #f3f4f6;
+  --blockquote-background: #374151;
+  background-color: #111827 !important;
+}
+
+/* Default template styles */
+.default-template {
+  font-family: 'Source Han Sans', -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+}
+
+.default-template h1,
+.default-template h2,
+.default-template h3,
+.default-template h4,
+.default-template h5,
+.default-template h6 {
+  color: var(--theme-color);
+  font-weight: bold;
+}
+
+.default-template p {
+  text-align: justify;
+  line-height: 2;
+  color: var(--text-color);
+}
+
+.default-template blockquote {
+  border-left: 4px solid var(--theme-color);
+  background: var(--blockquote-background);
+  padding: 1em;
+  margin: 1em 0;
+  border-radius: 6px;
+  color: var(--text-color);
+}
+
+.default-template code {
+  background: rgba(27,31,35,.05);
+  padding: 3px 5px;
+  border-radius: 4px;
+  font-family: Menlo, Operator Mono, Consolas, Monaco, monospace;
+  color: var(--text-color);
+}
+
+.markdown-preview.dark .default-template code {
+  background: rgba(255,255,255,.1);
+  color: var(--text-color);
+}
+
+.default-template pre {
+  background: #f6f8fa;
+  padding: 1em;
+  border-radius: 8px;
+  overflow-x: auto;
+  line-height: 1.5;
+  border: 1px solid #e1e4e8;
+}
+
+.markdown-preview.dark .default-template pre {
+  background: #1f2937;
+  border: 1px solid #374151;
+}
+
+.default-template pre code {
+  background: none;
+  padding: 0;
+}
+
+.default-template img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  display: block;
+  margin: 0.5em auto;
+}
+
+.default-template table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+}
+
+.default-template th,
+.default-template td {
+  border: 1px solid #dfdfdf;
+  padding: 0.5em;
+  text-align: left;
+  color: var(--text-color);
+}
+
+.markdown-preview.dark .default-template th,
+.markdown-preview.dark .default-template td {
+  border: 1px solid #4b5563;
+}
+
+.default-template th {
+  background: rgba(0, 0, 0, 0.05);
+  font-weight: bold;
+}
+
+.markdown-preview.dark .default-template th {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.default-template ul,
+.default-template ol {
+  padding-left: 1.5em;
+  margin: 1em 0;
+}
+
+.default-template ul {
+  list-style-type: circle !important;
+}
+
+.default-template ol {
+  list-style-type: decimal !important;
+}
+
+.default-template li {
+  display: list-item !important;
+  margin: 0.2em 0;
+  color: var(--text-color);
+  list-style-position: outside;
+}
+
+.default-template a {
+  color: #0969da;
+  text-decoration: none;
+}
+
+.default-template a:hover {
+  text-decoration: underline;
+}
+
+.default-template strong {
+  color: var(--theme-color);
+  font-weight: bold;
+}
+
+.markdown-preview.dark .default-template strong {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.default-template em {
+  font-style: italic;
+  color: var(--text-color);
+}
+
+/* Code theme styles */
+.prism-github {
+  background: #f6f8fa;
+  color: #24292e;
+}
+
+.prism-github-dark {
+  background: #0d1117;
+  color: #c9d1d9;
+}
+
+.prism-monokai {
+  background: #272822;
+  color: #f8f8f2;
+}
+
+.prism-solarized-light {
+  background: #fdf6e3;
+  color: #657b83;
+}
+
+.prism-solarized-dark {
+  background: #002b36;
+  color: #839496;
+}
+
+.prism-vs {
+  background: #ffffff;
+  color: #000000;
+}
+
+.prism-vs-dark {
+  background: #1e1e1e;
+  color: #d4d4d4;
+}
+
+.prism-atom-one-light {
+  background: #fafafa;
+  color: #383a42;
+}
+
+.prism-atom-one-dark {
+  background: #282c34;
+  color: #abb2bf;
+}
+
+/* Error styles */
+.markdown-error {
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 4px;
+  padding: 1em;
+  margin: 1em 0;
+}
+
+/* Mermaid diagram styles */
+.mermaid-diagram {
+  --mermaid-border-color: #e2e8f0;
+  --mermaid-bg-color: #ffffff;
+  text-align: center;
+  margin: 2em 0;
+  padding: 2em;
+  border: 1px solid var(--mermaid-border-color);
+  border-radius: 12px;
+  background: var(--mermaid-bg-color);
+  overflow-x: auto;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.mermaid-diagram:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+.markdown-preview.dark .mermaid-diagram {
+  --mermaid-border-color: #334155;
+  --mermaid-bg-color: #1e293b;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+.markdown-preview.dark .mermaid-diagram:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+}
+
+.mermaid-diagram svg {
+  max-width: 100%;
+  height: auto;
+  font-family: 'Source Han Sans', -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.markdown-preview.dark .mermaid-diagram svg {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.mermaid-loading {
+  color: var(--text-color, #666);
+  font-style: italic;
+  padding: 2em;
+}
+
+.mermaid-error {
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 4px;
+  padding: 1em;
+  margin: 1em 0;
+  text-align: left;
+}
+
+.markdown-preview.dark .mermaid-error {
+  color: #fca5a5;
+  background: #451a1a;
+  border: 1px solid #7f1d1d;
+}
+
+.mermaid-error pre {
+  margin-top: 0.5em;
+  font-size: 0.9em;
+  background: rgba(0,0,0,0.1);
+  padding: 0.5em;
+  border-radius: 4px;
+  border: none;
+  overflow-x: auto;
+}
+
+.markdown-preview.dark .mermaid-error pre {
+  background: rgba(255,255,255,0.1);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .markdown-preview {
+    padding: 0.5rem;
+    font-size: 14px;
+  }
+  
+  .default-template h1,
+  .default-template h2,
+  .default-template h3 {
+    font-size: 1.1em;
+  }
+  
+  .default-template pre {
+    font-size: 12px;
+  }
+} 

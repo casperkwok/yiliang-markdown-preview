@@ -1,0 +1,61 @@
+{
+  "common": {
+    "loading": "Loading content...",
+    "error": "Error",
+    "unknownError": "An unknown error occurred",
+    "noContent": "No content to preview",
+    "selectCell": "Please select a cell to view its content",
+    "loadingError": "Error loading content",
+    "selectCellPlaceholder": "Please select a cell"
+  },
+  "footer": {
+    "edit": "Edit",
+    "copy": "Copy",
+    "export": "Export",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving",
+    "saved": "Saved",
+    "copied": "Copied",
+    "exported": "Exported",
+    "failed": "Failed",
+    "editMode": "Edit Mode",
+    "characters": "characters",
+    "editContent": "Edit content",
+    "copyContent": "Copy content to clipboard",
+    "exportPDF": "Export as PDF file",
+    "cancelEdit": "Cancel editing",
+    "saveContent": "Save content"
+  },
+  "editor": {
+    "placeholder": "Start editing Markdown content..."
+  },
+  "sponsor": {
+    "officialDocs": "Official Group",
+    "viewDocs": "Join official group"
+  },
+  "navbar": {
+    "current": "Current",
+    "selectField": "Please select a field",
+    "row": "Row",
+    "prevRecord": "Previous record",
+    "nextRecord": "Next record"
+  },
+  "errors": {
+    "processingMarkdown": "Error processing markdown content",
+    "copyFailed": "Copy failed, please try again",
+    "copySuccess": "Content copied to clipboard",
+    "exportFailed": "Export failed, please try again",
+    "exportSuccess": "PDF exported successfully",
+    "saveFailed": "Save failed, please try again",
+    "saveSuccess": "Content saved successfully",
+    "getCellContent": "Error getting cell content",
+    "updateCellContent": "Failed to update cell content",
+    "getFieldName": "Error getting field name",
+    "getRecordIds": "Failed to get record IDs",
+    "noSelectedCell": "No cell selected for update",
+    "allCopyMethodsFailed": "All copy methods failed",
+    "copyOperationFailed": "Copy operation failed",
+    "contentNotFound": "Content to copy not found"
+  }
+} 

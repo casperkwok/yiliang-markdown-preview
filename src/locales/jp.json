@@ -1,0 +1,61 @@
+{
+  "common": {
+    "loading": "コンテンツを読み込み中...",
+    "error": "エラー",
+    "unknownError": "不明なエラーが発生しました",
+    "noContent": "プレビューするコンテンツがありません",
+    "selectCell": "セルを選択してコンテンツを表示してください",
+    "loadingError": "コンテンツの読み込み中にエラーが発生しました",
+    "selectCellPlaceholder": "セルを選択してください"
+  },
+  "footer": {
+    "edit": "編集",
+    "copy": "コピー",
+    "export": "エクスポート",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "saving": "保存中",
+    "saved": "保存済み",
+    "copied": "コピー済み",
+    "exported": "エクスポート済み",
+    "failed": "失敗",
+    "editMode": "編集モード",
+    "characters": "文字",
+    "editContent": "コンテンツを編集",
+    "copyContent": "コンテンツをクリップボードにコピー",
+    "exportPDF": "PDFファイルとしてエクスポート",
+    "cancelEdit": "編集をキャンセル",
+    "saveContent": "コンテンツを保存"
+  },
+  "editor": {
+    "placeholder": "Markdownコンテンツの編集を開始..."
+  },
+  "sponsor": {
+    "officialDocs": "公式グループ",
+    "viewDocs": "公式グループに参加"
+  },
+  "navbar": {
+    "current": "現在",
+    "selectField": "フィールドを選択してください",
+    "row": "行",
+    "prevRecord": "前のレコード",
+    "nextRecord": "次のレコード"
+  },
+  "errors": {
+    "processingMarkdown": "Markdownコンテンツの処理中にエラーが発生しました",
+    "copyFailed": "コピーに失敗しました。再試行してください",
+    "copySuccess": "コンテンツがクリップボードにコピーされました",
+    "exportFailed": "エクスポートに失敗しました。再試行してください",
+    "exportSuccess": "PDFが正常にエクスポートされました",
+    "saveFailed": "保存に失敗しました。再試行してください",
+    "saveSuccess": "コンテンツが正常に保存されました",
+    "getCellContent": "セルコンテンツの取得中にエラーが発生しました",
+    "updateCellContent": "セルコンテンツの更新に失敗しました",
+    "getFieldName": "フィールド名の取得中にエラーが発生しました",
+    "getRecordIds": "レコードIDの取得に失敗しました",
+    "noSelectedCell": "更新するセルが選択されていません",
+    "allCopyMethodsFailed": "すべてのコピー方法が失敗しました",
+    "copyOperationFailed": "コピー操作に失敗しました",
+    "contentNotFound": "コピーするコンテンツが見つかりません"
+  }
+} 
