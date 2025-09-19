@@ -41,6 +41,32 @@
     "prevRecord": "上一条记录",
     "nextRecord": "下一条记录"
   },
+  "pdfExport": {
+    "title": "PDF 导出设置",
+    "nameType": "文件名设置",
+    "useField": "使用字段名称",
+    "useFieldDesc": "基于预设字段自动生成文件名",
+    "customName": "自定义名称",
+    "customNameDesc": "手动输入文件名",
+    "customNamePlaceholder": "请输入文件名",
+    "currentField": "当前字段",
+    "dateField": "日期报告",
+    "indexField": "序号文档",
+    "contentField": "内容预览",
+    "preview": "文件名预览",
+    "cancel": "取消",
+    "export": "导出",
+    "exporting": "导出中...",
+    "loadingFields": "加载字段中...",
+    "noFields": "暂无可用字段",
+    "fieldValue": "字段值",
+    "loadingValue": "加载中...",
+    "emptyValue": "(空值)",
+    "nameSource": "文件名来源",
+    "customFileName": "自定义文件名",
+    "generatedFileName": "生成的文件名",
+    "generatedFromField": "基于字段自动生成"
+  },
   "errors": {
     "processingMarkdown": "处理 Markdown 内容时出错",
     "copyFailed": "复制失败，请重试",
@@ -58,4 +84,4 @@
     "copyOperationFailed": "复制操作失败",
     "contentNotFound": "未找到要复制的内容"
   }
-} 
+}

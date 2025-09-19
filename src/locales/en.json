@@ -41,6 +41,32 @@
     "prevRecord": "Previous record",
     "nextRecord": "Next record"
   },
+  "pdfExport": {
+    "title": "PDF Export Settings",
+    "nameType": "Filename Settings",
+    "useField": "Use Field Name",
+    "useFieldDesc": "Auto-generate filename based on preset fields",
+    "customName": "Custom Name",
+    "customNameDesc": "Manually enter filename",
+    "customNamePlaceholder": "Enter filename",
+    "currentField": "Current Field",
+    "dateField": "Date Report",
+    "indexField": "Index Document",
+    "contentField": "Content Preview",
+    "preview": "Filename Preview",
+    "cancel": "Cancel",
+    "export": "Export",
+    "exporting": "Exporting...",
+    "loadingFields": "Loading fields...",
+    "noFields": "No fields available",
+    "fieldValue": "Field Value",
+    "loadingValue": "Loading...",
+    "emptyValue": "(Empty)",
+    "nameSource": "Filename Source",
+    "customFileName": "Custom Filename",
+    "generatedFileName": "Generated Filename",
+    "generatedFromField": "Auto-generated from field"
+  },
   "errors": {
     "processingMarkdown": "Error processing markdown content",
     "copyFailed": "Copy failed, please try again",
@@ -58,4 +84,4 @@
     "copyOperationFailed": "Copy operation failed",
     "contentNotFound": "Content to copy not found"
   }
-} 
+}

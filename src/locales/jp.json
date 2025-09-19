@@ -41,6 +41,32 @@
     "prevRecord": "前のレコード",
     "nextRecord": "次のレコード"
   },
+  "pdfExport": {
+    "title": "PDFエクスポート設定",
+    "nameType": "ファイル名設定",
+    "useField": "フィールド名を使用",
+    "useFieldDesc": "プリセットフィールドに基づいてファイル名を自動生成",
+    "customName": "カスタム名",
+    "customNameDesc": "ファイル名を手動入力",
+    "customNamePlaceholder": "ファイル名を入力",
+    "currentField": "現在のフィールド",
+    "dateField": "日付レポート",
+    "indexField": "インデックス文書",
+    "contentField": "コンテンツプレビュー",
+    "preview": "ファイル名プレビュー",
+    "cancel": "キャンセル",
+    "export": "エクスポート",
+    "exporting": "エクスポート中...",
+    "loadingFields": "フィールド読み込み中...",
+    "noFields": "使用可能なフィールドがありません",
+    "fieldValue": "フィールド値",
+    "loadingValue": "読み込み中...",
+    "emptyValue": "(空)",
+    "nameSource": "ファイル名ソース",
+    "customFileName": "カスタムファイル名",
+    "generatedFileName": "生成されたファイル名",
+    "generatedFromField": "フィールドから自動生成"
+  },
   "errors": {
     "processingMarkdown": "Markdownコンテンツの処理中にエラーが発生しました",
     "copyFailed": "コピーに失敗しました。再試行してください",
@@ -58,4 +84,4 @@
     "copyOperationFailed": "コピー操作に失敗しました",
     "contentNotFound": "コピーするコンテンツが見つかりません"
   }
-} 
+}
