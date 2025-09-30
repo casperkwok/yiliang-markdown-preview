@@ -30,6 +30,7 @@ export interface RendererOptions {
     table: Record<string, string>;
     thead: Record<string, string>;
     td: Record<string, string>;
+    hr: Record<string, string>;
   };
   inline: {
     listitem: Record<string, string>;
