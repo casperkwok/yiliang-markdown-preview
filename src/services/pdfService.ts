@@ -10,7 +10,7 @@ interface PDFOptions {
   filename: string;
   quality?: number;
   format?: string;
-  orientation?: 'portrait' | 'landscape';
+  orientation?: "portrait" | "landscape";
 }
 
 interface ExportResult {
@@ -31,52 +31,65 @@ export const exportElementToPDF = async (
 ): Promise<ExportResult> => {
   try {
     // Dynamically import html2pdf to reduce initial bundle size
-    const { default: html2pdf } = await import('html2pdf.js');
-    
+    const { default: html2pdf } = await import("html2pdf.js");
+
     // 克隆元素以避免影响原始DOM
     const clonedElement = element.cloneNode(true) as HTMLElement;
-    
+
     // 强制使用 light 模式样式进行 PDF 导出
     forceLightModeForPDF(clonedElement);
-    
+
     // 添加PDF专用样式修复
     addPDFStyles(clonedElement);
-    
-    // 简化的html2pdf配置
+
+    // 优化的html2pdf配置 - 简化版，避免内容丢失
     const opt = {
-      margin: 1,
+      margin: 10, // 统一边距
       filename: options.filename,
-      image: { 
-        type: 'jpeg', 
-        quality: 0.98 
+      image: {
+        type: "jpeg",
+        quality: 0.98,
       },
-      html2canvas: { 
+      html2canvas: {
         scale: 2,
         useCORS: true,
         allowTaint: true,
-        backgroundColor: '#ffffff',
+        backgroundColor: "#ffffff",
         logging: false,
+        onclone: (clonedDoc: Document) => {
+          // 在html2canvas的隔离环境中执行DOM操作
+          const clonedContent = clonedDoc.querySelector("#preview-content");
+          if (clonedContent) {
+            fixPDFDisplayIssues(clonedContent as HTMLElement);
+          }
+        },
       },
-      jsPDF: { 
-        unit: 'in', 
-        format: 'letter', 
-        orientation: 'portrait'
-      }
+      jsPDF: {
+        unit: "mm",
+        format: "a4",
+        orientation: "portrait",
+      },
+      pagebreak: {
+        mode: ["css", "legacy"],
+        before: ".page-break-before",
+        after: ".page-break-after",
+        avoid: [],
+      },
     };
 
-    console.log('Starting PDF export...');
+    console.log("Starting PDF export...");
     await html2pdf().set(opt).from(clonedElement).save();
-    console.log('PDF export completed successfully');
-    
+    console.log("PDF export completed successfully");
+
     return {
       success: true,
-      message: 'PDF导出成功'
+      message: "PDF导出成功",
     };
   } catch (error) {
-    console.error('PDF export failed:', error);
+    console.error("PDF export failed:", error);
     return {
       success: false,
-      message: error instanceof Error ? error.message : '导出失败，请重试'
+      message: error instanceof Error ? error.message : "导出失败，请重试",
     };
   }
 };
@@ -86,256 +99,435 @@ export const exportElementToPDF = async (
  */
 const forceLightModeForPDF = (element: HTMLElement): void => {
   // 移除 dark 模式的类名
-  const darkElements = element.querySelectorAll('.dark');
-  darkElements.forEach(el => {
-    el.classList.remove('dark');
+  const darkElements = element.querySelectorAll(".dark");
+  darkElements.forEach((el) => {
+    el.classList.remove("dark");
   });
-  
+
   // 移除 markdown-preview 上的 dark 类
-  const markdownPreview = element.querySelector('.markdown-preview');
+  const markdownPreview = element.querySelector(".markdown-preview");
   if (markdownPreview) {
-    markdownPreview.classList.remove('dark');
+    markdownPreview.classList.remove("dark");
   }
-  
+
   // 强制设置 light 模式的 CSS 变量
-  const style = document.createElement('style');
+  const style = document.createElement("style");
   style.textContent = `
     /* 强制 PDF 使用 light 模式样式 */
     .markdown-preview {
-      --theme-color: #333 !important;
-      --text-color: #333 !important;
-      --blockquote-background: #f8f9fa !important;
-      --font-size: 15px !important;
+      --theme-color: #374151 !important;
+      --text-color: #374151 !important;
+      --blockquote-background: #f8fafc !important;
+      --font-size: 16px !important;
       background-color: #ffffff !important;
-      color: #333 !important;
+      color: #374151 !important;
+      /* 高清字体渲染优化 */
+      -webkit-font-smoothing: antialiased !important;
+      -moz-osx-font-smoothing: grayscale !important;
+      text-rendering: optimizeLegibility !important;
+      font-variant-ligatures: none !important;
+      /* 使用系统高质量字体 */
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji" !important;
     }
     
     /* 确保所有元素使用 light 模式颜色 */
     h1, h2, h3, h4, h5, h6 {
-      color: #333 !important;
+      color: #374151 !important;
+      font-weight: 600 !important;
+    }
+    
+    h1 {
+      font-size: 1.75rem !important;
+      font-weight: 700 !important;
+      border-bottom: none !important;
+      padding-bottom: 0.5rem !important;
+      margin-bottom: 1.5rem !important;
+      line-height: 1.2 !important;
+      display: block !important;
+      position: relative !important;
+    }
+    
+    h2 {
+      font-size: 1.375rem !important;
+      border-bottom: none !important;
+      padding-bottom: 0.25rem !important;
+      margin-top: 2rem !important;
+      margin-bottom: 1rem !important;
+      line-height: 1.2 !important;
+      display: block !important;
+      position: relative !important;
+    }
+    
+    h3 {
+      font-size: 1.25rem !important;
+      margin-top: 1.5rem !important;
+      margin-bottom: 0.75rem !important;
+    }
+    
+    h6 {
+      color: #6b7280 !important;
+      font-size: 0.875rem !important;
     }
     
     p, li, td, th, span, div {
-      color: #333 !important;
+      color: #374151 !important;
+      line-height: 1.7 !important;
     }
     
     strong {
-      color: #333 !important;
+      color: #374151 !important;
+      font-weight: 600 !important;
     }
     
     blockquote {
-      border-left-color: #333 !important;
-      background: #f8f9fa !important;
-      color: #333 !important;
+      border-left: 3px solid #374151 !important;
+      background: #f8fafc !important;
+      color: #374151 !important;
+      padding: 1rem 1.5rem !important;
+      margin: 1.5rem 0 !important;
+      border-radius: 0.375rem !important;
+      font-style: italic !important;
+    }
+    
+    /* 水平分割线样式 - 只应用于markdown中的hr，不影响我们创建的分割线 */
+    .markdown-content > hr {
+      border: none !important;
+      height: 1px !important;
+      background: #f1f5f9 !important;
+      margin: 2rem 0 !important;
     }
     
     /* 代码块使用 light 模式样式 */
     pre {
-      background: #f6f8fa !important;
+      background: #f8fafc !important;
       color: #24292e !important;
-      border: 1px solid #e1e4e8 !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 0.5rem !important;
+      padding: 1.25rem !important;
+      margin: 1.5rem 0 !important;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
     }
     
     code {
-      background: rgba(27,31,35,.05) !important;
-      color: #333 !important;
+      background: rgba(0, 0, 0, 0.08) !important;
+      color: #374151 !important;
+      padding: 0.125rem 0.375rem !important;
+      border-radius: 0.25rem !important;
+      font-size: 0.875em !important;
+      font-weight: 500 !important;
     }
     
-    /* 表格样式 */
+    /* 表格样式 - 优化为传统表格样式 + 防切割 */
     table {
-      color: #333 !important;
+      color: #374151 !important;
+      border-collapse: collapse !important;
+      margin: 1.5rem 0 !important;
+      border: 2px solid #d1d5db !important;
+      background: #ffffff !important;
+      width: 100% !important;
+    }
+    
+    th, td {
+      border: 1px solid #d1d5db !important;
+      padding: 0.75rem 1rem !important;
+      text-align: left !important;
+      color: #374151 !important;
+      min-width: 6em !important;
+      word-break: break-word !important;
     }
     
     th {
-      background: rgba(0, 0, 0, 0.05) !important;
-      color: #333 !important;
+      background: #f3f4f6 !important;
+      font-weight: 600 !important;
+      color: #374151 !important;
+      border-bottom: 2px solid #9ca3af !important;
+    }
+    
+    tbody tr:nth-child(even) {
+      background: #f9fafb !important;
     }
     
     /* 链接样式 */
     a {
-      color: #0969da !important;
+      color: #374151 !important;
+      text-decoration: none !important;
     }
   `;
   element.appendChild(style);
 };
 
 /**
- * 使用字符替换方法修复竖线问题
- * 这种方法比CSS border更可靠，因为它是实际的文本内容
+ * 修复PDF导出中的显示问题
+ * 简化方案，避免内容丢失
  */
-const fixVerticalLinesWithCharacters = (element: HTMLElement): void => {
-  // 修复H3标题的竖线
-  const h3Elements = element.querySelectorAll('h3[style*="border-left"]');
-  h3Elements.forEach((h3) => {
-    const h3Element = h3 as HTMLElement;
-    const currentText = h3Element.textContent || '';
-    
-    // 如果还没有竖线字符，则添加
-    if (!currentText.startsWith('▍')) {
-      h3Element.textContent = `▍ ${currentText}`;
+const fixPDFDisplayIssues = (element: HTMLElement): void => {
+  console.log("开始修复PDF显示问题...");
+
+  // 修复标题下划线 - 使用div而非hr，避免样式冲突
+  const h1Elements = element.querySelectorAll("h1");
+  console.log(`找到 ${h1Elements.length} 个H1标题`);
+  h1Elements.forEach((h1, index) => {
+    const h1Element = h1 as HTMLElement;
+    console.log(
+      `处理H1 #${index + 1}: "${h1Element.textContent?.substring(0, 30)}..."`
+    );
+
+    // 移除原有边框和间距
+    h1Element.style.setProperty("border-bottom", "none", "important");
+    h1Element.style.setProperty("padding-bottom", "0.5rem", "important");
+    h1Element.style.setProperty("margin-bottom", "0", "important");
+
+    // 使用div作为分割线容器，确保有足够间距
+    const separator = document.createElement("div");
+    separator.className = "pdf-title-separator"; // 添加类名便于调试
+    separator.style.cssText = `
+      width: 100% !important;
+      height: 1px !important;
+      background-color: #f1f5f9 !important;
+      margin-top: 10px !important;
+      margin-bottom: 1.5rem !important;
+      border: none !important;
+      padding: 0 !important;
+      display: block !important;
+    `;
+    if (h1Element.nextSibling) {
+      h1Element.parentNode?.insertBefore(separator, h1Element.nextSibling);
+      console.log(`  - 在H1后插入了分割线`);
+    } else {
+      h1Element.parentNode?.appendChild(separator);
+      console.log(`  - 在父元素末尾添加了分割线`);
     }
   });
-  
-  // 修复blockquote的竖线
-  const blockquoteElements = element.querySelectorAll('blockquote[style*="border-left"]');
-  blockquoteElements.forEach((blockquote) => {
-    const blockquoteElement = blockquote as HTMLElement;
-    const currentHTML = blockquoteElement.innerHTML;
-    
-    // 在每行前添加竖线字符
-    if (!currentHTML.includes('▍')) {
-      // 将内容按行分割，在每行前加上竖线
-      const lines = currentHTML.split('<br>');
-      const modifiedLines = lines.map(line => line.trim() ? `▍ ${line}` : line);
-      blockquoteElement.innerHTML = modifiedLines.join('<br>');
+
+  const h2Elements = element.querySelectorAll("h2");
+  h2Elements.forEach((h2) => {
+    const h2Element = h2 as HTMLElement;
+    // 移除原有边框和间距
+    h2Element.style.setProperty("border-bottom", "none", "important");
+    h2Element.style.setProperty("padding-bottom", "0.25rem", "important");
+    h2Element.style.setProperty("margin-bottom", "0", "important");
+
+    // 使用div作为分割线容器
+    const separator = document.createElement("div");
+    separator.className = "pdf-title-separator"; // 添加类名便于调试
+    separator.style.cssText = `
+      width: 100% !important;
+      height: 1px !important;
+      background-color: #f8fafc !important;
+      margin-top: 8px !important;
+      margin-bottom: 1rem !important;
+      border: none !important;
+      padding: 0 !important;
+      display: block !important;
+    `;
+    if (h2Element.nextSibling) {
+      h2Element.parentNode?.insertBefore(separator, h2Element.nextSibling);
+    } else {
+      h2Element.parentNode?.appendChild(separator);
     }
   });
+
+  // 简化列表圆点处理 - 只添加前缀，不修改结构
+  const ulElements = element.querySelectorAll("ul");
+  ulElements.forEach((ul) => {
+    const liElements = ul.querySelectorAll("li");
+    liElements.forEach((li) => {
+      const liElement = li as HTMLElement;
+      // 检查是否已经处理过
+      const firstChild = liElement.firstChild;
+      if (firstChild && firstChild.nodeType === Node.TEXT_NODE) {
+        const textNode = firstChild as Text;
+        if (!textNode.textContent?.startsWith("· ")) {
+          // 在文本节点前添加圆点
+          textNode.textContent = "· " + textNode.textContent;
+        }
+      } else if (firstChild && firstChild.nodeType === Node.ELEMENT_NODE) {
+        // 如果第一个是元素节点，插入文本节点
+        const bulletText = document.createTextNode("· ");
+        liElement.insertBefore(bulletText, firstChild);
+      }
+
+      // 设置样式
+      liElement.style.setProperty("list-style", "none", "important");
+      liElement.style.setProperty("padding-left", "0", "important");
+    });
+    (ul as HTMLElement).style.setProperty("list-style", "none", "important");
+    (ul as HTMLElement).style.setProperty("padding-left", "1rem", "important");
+  });
+
+  console.log("PDF显示问题修复完成");
 };
 
 /**
  * 添加PDF专用样式修复
  */
 const addPDFStyles = (element: HTMLElement): void => {
-  // 使用字符替换方法修复竖线问题
-  fixVerticalLinesWithCharacters(element);
-  
+  // 修复PDF显示问题
+  fixPDFDisplayIssues(element);
+
   // 使用更强的CSS覆盖，确保样式生效
-  const style = document.createElement('style');
+  const style = document.createElement("style");
   style.textContent = `
     /* 强制PDF样式修复 - 使用更高优先级 */
     
-    /* 移除所有border-left，使用字符替换 */
-    h3[style*="border-left"] {
-      border-left: none !important;
-      padding-left: 0 !important;
+    /* 整体容器宽度控制 */
+    #preview-content {
+      max-width: 100% !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 1cm 1.5cm !important;
+      box-sizing: border-box !important;
     }
     
-    blockquote[style*="border-left"] {
-      border-left: none !important;
-      padding-left: 16px !important;
+    .markdown-content {
+      max-width: 100% !important;
+      width: 100% !important;
+      overflow: visible !important;
     }
     
-    /* 表格对齐修复 */
+    /* 表格对齐修复 - 传统表格样式 + 加强防切割 */
     table {
       border-collapse: collapse !important;
       width: 100% !important;
-    }
-    
-    td, th {
-      border: 1px solid #dfdfdf !important;
-      padding: 0.25em 0.5em !important;
-      text-align: center !important;
-      vertical-align: middle !important;
+      margin: 1.5rem 0 !important;
+      border: 2px solid #d1d5db !important;
+      background: #ffffff !important;
+      page-break-before: auto !important;
+      page-break-after: auto !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid-page !important;
+      display: table !important;
     }
     
     thead {
-      background: rgba(0, 0, 0, 0.05) !important;
-      font-weight: bold !important;
+      background: #f3f4f6 !important;
+      font-weight: 600 !important;
+      display: table-header-group !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    
+    thead th {
+      border-bottom: 2px solid #9ca3af !important;
+    }
+    
+    tbody {
+      display: table-row-group !important;
+      page-break-inside: auto !important;
+    }
+    
+    td, th {
+      border: 1px solid #d1d5db !important;
+      padding: 0.75rem 1rem !important;
+      text-align: left !important;
+      vertical-align: middle !important;
+      color: #374151 !important;
+      min-width: 6em !important;
+      word-break: break-word !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    
+    tbody tr {
+      background: #ffffff !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      display: table-row !important;
+    }
+    
+    tbody tr:nth-child(even) {
+      background: #f9fafb !important;
+    }
+    
+    tr {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      display: table-row !important;
     }
     
     /* 基础对齐修复 */
     h1, h2 {
-      text-align: center !important;
+      text-align: left !important;
     }
     
     p {
-      text-align: justify !important;
-      line-height: 2 !important;
-      letter-spacing: 0.1em !important;
+      text-align: left !important;
+      line-height: 1.7 !important;
+      letter-spacing: 0 !important;
+      margin: 1rem 0 !important;
     }
     
     pre {
-      background: #f6f8fa !important;
-      border: 1px solid #e1e4e8 !important;
-      border-radius: 8px !important;
-      padding: 1em !important;
+      background: #f8fafc !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 0.5rem !important;
+      padding: 1.25rem !important;
       overflow: visible !important;
       white-space: pre-wrap !important;
       word-wrap: break-word !important;
+      margin: 1.5rem 0 !important;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
     }
     
     code {
-      background: rgba(27,31,35,.05) !important;
-      padding: 3px 5px !important;
-      border-radius: 4px !important;
+      background: rgba(0, 0, 0, 0.08) !important;
+      padding: 0.125rem 0.375rem !important;
+      border-radius: 0.25rem !important;
+      color: #374151 !important;
+      font-size: 0.875em !important;
+      font-weight: 500 !important;
     }
     
     a {
-      color: #576b95 !important;
+      color: #374151 !important;
     }
     
     strong {
-      font-weight: bold !important;
+      font-weight: 600 !important;
+      color: #374151 !important;
+    }
+    
+    /* 列表样式 - 简化版 */
+    ul {
+      padding-left: 1rem !important;
+      margin: 1rem 0 !important;
+      list-style: none !important;
+    }
+    
+    ol {
+      padding-left: 1.5rem !important;
+      margin: 1rem 0 !important;
+    }
+    
+    li {
+      margin: 0.375rem 0 !important;
+      line-height: 1.6 !important;
+      color: #374151 !important;
+      list-style: none !important;
+      padding-left: 0 !important;
+    }
+    
+    /* 分页优化 */
+    h1, h2, h3, h4, h5, h6 {
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+    
+    p, blockquote, pre {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    
+    /* 避免孤立行 */
+    p {
+      orphans: 3 !important;
+      widows: 3 !important;
     }
   `;
-  
+
   // 将样式插入到head中，确保最高优先级
   element.appendChild(style);
-  
-  // 同时进行DOM操作作为备选方案
-  setTimeout(() => {
-    // 修复H3元素
-    const h3Elements = element.querySelectorAll('h3');
-    h3Elements.forEach((h3) => {
-      const h3Element = h3 as HTMLElement;
-      const computedStyle = getComputedStyle(h3Element);
-      
-      if (computedStyle.borderLeftWidth && computedStyle.borderLeftWidth !== '0px') {
-        // 如果有border-left，则替换为伪元素
-        h3Element.style.setProperty('border-left', 'none', 'important');
-        h3Element.style.setProperty('padding-left', '16px', 'important');
-        h3Element.style.setProperty('position', 'relative', 'important');
-        
-        // 创建伪元素的替代方案
-        const existingLine = h3Element.querySelector('.pdf-line');
-        if (!existingLine) {
-          const line = document.createElement('span');
-          line.className = 'pdf-line';
-          line.style.cssText = `
-            position: absolute !important;
-            left: 0 !important;
-            top: 0 !important;
-            bottom: 0 !important;
-            width: 4px !important;
-            background-color: var(--theme-color, #333) !important;
-          `;
-          h3Element.insertBefore(line, h3Element.firstChild);
-        }
-      }
-    });
-    
-    // 修复引用块
-    const blockquotes = element.querySelectorAll('blockquote');
-    blockquotes.forEach((blockquote) => {
-      const bqElement = blockquote as HTMLElement;
-      const computedStyle = getComputedStyle(bqElement);
-      
-      if (computedStyle.borderLeftWidth && computedStyle.borderLeftWidth !== '0px') {
-        bqElement.style.setProperty('border-left', 'none', 'important');
-        bqElement.style.setProperty('padding-left', '1.5em', 'important');
-        bqElement.style.setProperty('position', 'relative', 'important');
-        
-        const existingLine = bqElement.querySelector('.pdf-line');
-        if (!existingLine) {
-          const line = document.createElement('span');
-          line.className = 'pdf-line';
-          line.style.cssText = `
-            position: absolute !important;
-            left: 0 !important;
-            top: 0 !important;
-            bottom: 0 !important;
-            width: 4px !important;
-            background-color: var(--theme-color, #333) !important;
-            border-radius: 6px !important;
-          `;
-          bqElement.insertBefore(line, bqElement.firstChild);
-        }
-      }
-    });
-  }, 100);
 };
-
-
 
 /**
  * 导出当前预览内容为PDF
@@ -347,20 +539,20 @@ export const exportPreviewToPDF = async (
   filename: string,
   options: Partial<PDFOptions> = {}
 ): Promise<ExportResult> => {
-  const element = document.getElementById('preview-content');
-  
+  const element = document.getElementById("preview-content");
+
   if (!element) {
     return {
       success: false,
-      message: '未找到要导出的内容'
+      message: "未找到要导出的内容",
     };
   }
-  
+
   return exportElementToPDF(element, {
     filename,
     quality: 0.98,
-    format: 'a4',
-    orientation: 'portrait',
-    ...options
+    format: "a4",
+    orientation: "portrait",
+    ...options,
   });
-}; 
+};

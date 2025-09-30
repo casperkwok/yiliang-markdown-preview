@@ -1,184 +1,197 @@
-import type { Template, RendererOptions } from '../types/template';
+import type { Template, RendererOptions } from "../types/template";
 
 export const defaultOptions: RendererOptions = {
   base: {
-    themeColor: 'var(--theme-color, #333)',
-    fontFamily: '\'Source Han Sans\', -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif',
-    textAlign: 'left',
-    lineHeight: '2',
-    padding: '1rem 1.5rem',
-    maxWidth: '100%',
-    margin: '0 auto',
-    wordBreak: 'break-word',
-    whiteSpace: 'pre-wrap',
-    fontSize: '15px',
-    color: 'var(--text-color, #333)'
+    themeColor: "var(--theme-color, #333)",
+    fontFamily:
+      '\'Source Han Sans\', -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif',
+    textAlign: "left",
+    lineHeight: "2",
+    padding: "1rem 1.5rem",
+    maxWidth: "100%",
+    margin: "0 auto",
+    wordBreak: "break-word",
+    whiteSpace: "pre-wrap",
+    fontSize: "15px",
+    color: "var(--text-color, #333)",
   },
   block: {
     h1: {
-      display: 'block',
-      padding: '0 1em 0.5em 1em',
-      borderBottom: '2px solid var(--theme-color)',
-      margin: '2em auto 1em',
-      color: 'var(--theme-color)',
-      fontSize: '1.2em',
-      fontWeight: 'bold',
-      textAlign: 'center',
-      textDecoration: 'none',
-      pageBreakInside: 'avoid'
+      display: "block",
+      padding: "0 0 0.5rem 0",
+      borderBottom: "1px solid #f1f5f9",
+      margin: "0 0 1.5rem 0",
+      color: "var(--theme-color)",
+      fontSize: "1.75rem",
+      fontWeight: "700",
+      textAlign: "left",
+      textDecoration: "none",
+      pageBreakInside: "avoid",
     },
     h2: {
-      display: 'block',
-      padding: '0 0.2em 0.5em 0.2em',
-      margin: '2em auto 2em',
-      color: 'var(--theme-color)',
-      borderBottom: '2px solid var(--theme-color)',
-      fontSize: '1.2em',
-      fontWeight: 'bold',
-      textAlign: 'center',
-      textDecoration: 'none',
-      pageBreakInside: 'avoid'
+      display: "block",
+      padding: "0 0 0.25rem 0",
+      margin: "2rem 0 1rem 0",
+      color: "var(--theme-color)",
+      borderBottom: "1px solid #f8fafc",
+      fontSize: "1.375rem",
+      fontWeight: "600",
+      textAlign: "left",
+      textDecoration: "none",
+      pageBreakInside: "avoid",
     },
     h3: {
-      paddingLeft: '12px',
-      borderLeft: '4px solid var(--theme-color)',
-      margin: '2em 8px 0.75em 0',
-      color: 'var(--theme-color)',
-      fontSize: '1.1em',
-      fontWeight: 'bold',
-      lineHeight: '1.2',
-      pageBreakInside: 'avoid'
+      paddingLeft: "0",
+      borderLeft: "none",
+      margin: "1.5rem 0 0.75rem 0",
+      color: "var(--theme-color)",
+      fontSize: "1.25rem",
+      fontWeight: "600",
+      lineHeight: "1.3",
+      pageBreakInside: "avoid",
     },
     h4: {
-      margin: '2em 8px 0.5em',
-      color: 'var(--theme-color)',
-      fontSize: '1em',
-      fontWeight: 'bold',
-      pageBreakInside: 'avoid'
+      margin: "1.25rem 0 0.5rem 0",
+      color: "var(--theme-color)",
+      fontSize: "1.125rem",
+      fontWeight: "600",
+      pageBreakInside: "avoid",
     },
     h5: {
-      margin: '1.5em 8px 0.5em',
-      color: 'var(--theme-color)',
-      fontSize: '1em',
-      fontWeight: 'bold',
-      pageBreakInside: 'avoid'
+      margin: "1rem 0 0.5rem 0",
+      color: "var(--theme-color)",
+      fontSize: "1rem",
+      fontWeight: "600",
+      pageBreakInside: "avoid",
     },
     h6: {
-      margin: '1.5em 8px 0.5em',
-      fontSize: '1em',
-      color: 'var(--theme-color)',
-      pageBreakInside: 'avoid'
+      margin: "1rem 0 0.5rem 0",
+      fontSize: "0.875rem",
+      color: "#6b7280",
+      fontWeight: "600",
+      pageBreakInside: "avoid",
     },
     p: {
-      fontSize: 'var(--font-size, 15px)',
-      margin: '1.5em 8px',
-      letterSpacing: '0.1em',
-      color: 'var(--text-color, #333)',
-      textAlign: 'justify',
-      pageBreakInside: 'avoid'
+      fontSize: "var(--font-size, 16px)",
+      margin: "1rem 0",
+      letterSpacing: "0",
+      color: "var(--text-color, #374151)",
+      textAlign: "left",
+      lineHeight: "1.7",
+      pageBreakInside: "avoid",
     },
     blockquote: {
-      fontStyle: 'normal',
-      padding: '1em',
-      borderLeft: '4px solid var(--theme-color)',
-      borderRadius: '6px',
-      color: 'rgba(0,0,0,0.5)',
-      background: 'var(--blockquote-background, #f8f9fa)',
-      margin: '0 0 1em 0',
-      pageBreakInside: 'avoid'
+      fontStyle: "italic",
+      padding: "1rem 1.5rem",
+      borderLeft: "3px solid var(--theme-color)",
+      borderRadius: "0.375rem",
+      color: "var(--text-color)",
+      background: "var(--blockquote-background, #f8fafc)",
+      margin: "1.5rem 0",
+      pageBreakInside: "avoid",
     },
     code_pre: {
-      fontSize: '14px',
-      overflowX: 'auto',
-      borderRadius: '8px',
-      padding: '1em',
-      lineHeight: '1.5',
-      margin: '10px 8px',
-      pageBreakInside: 'avoid'
+      fontSize: "14px",
+      overflowX: "auto",
+      borderRadius: "0.5rem",
+      padding: "1.25rem",
+      lineHeight: "1.6",
+      margin: "1.5rem 0",
+      pageBreakInside: "avoid",
     },
     code: {
-      margin: '0',
-      fontFamily: 'Menlo, Operator Mono, Consolas, Monaco, monospace'
+      margin: "0",
+      fontFamily:
+        "'SF Mono', Monaco, Inconsolata, 'Roboto Mono', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace",
     },
     image: {
-      display: 'block',
-      width: '100% !important',
-      margin: '0.1em auto 0.5em',
-      borderRadius: '4px'
+      display: "block",
+      width: "100% !important",
+      margin: "0.1em auto 0.5em",
+      borderRadius: "4px",
     },
     ol: {
-      paddingLeft: '1em',
-      color: 'var(--text-color, #333)',
-      listStyleType: 'decimal'
+      paddingLeft: "1.5rem",
+      color: "var(--text-color, #374151)",
+      listStyleType: "decimal",
+      margin: "1rem 0",
     },
     ul: {
-      listStyleType: 'circle',
-      paddingLeft: '1em',
-      color: 'var(--text-color, #333)'
+      listStyleType: "disc",
+      paddingLeft: "1.5rem",
+      color: "var(--text-color, #374151)",
+      margin: "1rem 0",
     },
     footnotes: {
-      margin: '0.5em 8px',
-      fontSize: '80%',
-      color: 'var(--text-color, #333)'
+      margin: "0.5em 8px",
+      fontSize: "80%",
+      color: "var(--text-color, #333)",
     },
     table: {
-      textAlign: 'center',
-      margin: '1em 8px',
-      color: 'var(--text-color, #333)'
+      textAlign: "center",
+      margin: "1em 8px",
+      color: "var(--text-color, #333)",
     },
     thead: {
-      background: 'rgba(0, 0, 0, 0.05)',
-      fontWeight: 'bold',
-      color: 'var(--text-color, #333)'
+      background: "rgba(0, 0, 0, 0.05)",
+      fontWeight: "bold",
+      color: "var(--text-color, #333)",
     },
     td: {
-      border: '1px solid #dfdfdf',
-      padding: '0.25em 0.5em',
-      color: '#3f3f3f'
-    }
+      border: "1px solid #dfdfdf",
+      padding: "0.25em 0.5em",
+      color: "#3f3f3f",
+    },
+    hr: {
+      border: "none",
+      height: "1px",
+      background: "#f1f5f9",
+      margin: "2rem 0",
+    },
   },
   inline: {
     listitem: {
-      display: 'list-item',
-      margin: '0.2em 8px',
-      color: 'var(--text-color, #333)',
-      pageBreakInside: 'avoid'
+      display: "list-item",
+      margin: "0.375rem 0",
+      color: "var(--text-color, #374151)",
+      lineHeight: "1.6",
+      pageBreakInside: "avoid",
     },
     codespan: {
-      fontSize: '90%',
-      color: '#333333',
-      background: 'rgba(27,31,35,.05)',
-      padding: '3px 5px',
-      borderRadius: '4px'
+      fontSize: "0.875em",
+      color: "#374151",
+      background: "rgba(0, 0, 0, 0.08)",
+      padding: "0.125rem 0.375rem",
+      borderRadius: "0.25rem",
+      fontWeight: "500",
     },
     em: {
-      fontStyle: 'italic',
-      fontSize: 'inherit'
+      fontStyle: "italic",
+      fontSize: "inherit",
     },
     link: {
-      color: '#576b95'
+      color: "var(--theme-color)",
+      textDecoration: "none",
     },
     strong: {
-      color: 'var(--theme-color)',
-      fontWeight: 'bold',
-      fontSize: 'inherit'
+      color: "var(--text-color)",
+      fontWeight: "600",
+      fontSize: "inherit",
     },
     footnote: {
-      fontSize: '12px',
-      color: 'var(--text-color, #333)'
-    }
-  }
+      fontSize: "12px",
+      color: "var(--text-color, #333)",
+    },
+  },
 };
 
 export const defaultTemplate: Template = {
-  id: 'default',
-  name: '默认',
-  description: '默认文章样式',
-  styles: 'default-template',
+  id: "default",
+  name: "默认",
+  description: "默认文章样式",
+  styles: "default-template",
   options: defaultOptions,
-  transform: (html: string) => html
+  transform: (html: string) => html,
 };
 
-export const templates: Template[] = [
-  defaultTemplate
-]; 
+export const templates: Template[] = [defaultTemplate];
