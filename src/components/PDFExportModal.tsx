@@ -60,9 +60,11 @@ export const PDFExportModal: React.FC<PDFExportModalProps> = ({
   const [_selectedFieldValue, setSelectedFieldValue] = useState<string>("");
   const [loadingFieldValue, setLoadingFieldValue] = useState(false);
   const [selectOptions, setSelectOptions] = useState<SelectOption[]>([]);
+  const [includeIndex, setIncludeIndex] = useState<boolean>(false);
 
   // 记忆用户选择的字段（使用localStorage）
   const STORAGE_KEY = "pdf-export-selected-field";
+  const INDEX_KEY = "pdf-export-include-index";
 
   const saveSelectedField = (fieldName: string) => {
     if (fieldName !== "custom") {
@@ -74,15 +76,29 @@ export const PDFExportModal: React.FC<PDFExportModalProps> = ({
     return localStorage.getItem(STORAGE_KEY) || "custom";
   };
 
+  const saveIndexSetting = (include: boolean) => {
+    localStorage.setItem(INDEX_KEY, include.toString());
+  };
+
+  const getStoredIndexSetting = (): boolean => {
+    const stored = localStorage.getItem(INDEX_KEY);
+    return stored !== null ? stored === "true" : false; // 默认false，不包含序号
+  };
+
   // 加载字段列表和生成默认自定义名称
   useEffect(() => {
     if (isOpen) {
+      // 获取序号设置
+      const includeIndexSetting = getStoredIndexSetting();
+      setIncludeIndex(includeIndexSetting);
+
       // 生成默认自定义名称
       const now = new Date();
       const dateStr = now.toISOString().split("T")[0].replace(/-/g, "");
+      const indexSuffix = includeIndexSetting && currentIndex >= 0 ? `_${currentIndex + 1}` : "";
       const defaultName =
         fieldName && currentIndex >= 0
-          ? `${fieldName}_${currentIndex + 1}_${dateStr}`
+          ? `${fieldName}${indexSuffix}_${dateStr}`
           : `markdown-preview_${dateStr}`;
       setCustomName(defaultName);
 
@@ -130,8 +146,7 @@ export const PDFExportModal: React.FC<PDFExportModalProps> = ({
               // 生成字段文件名
               const rawValue = value || initialSelection || "document";
               const cleanFilename = sanitizeFilename(rawValue, 30);
-              const indexSuffix =
-                currentIndex >= 0 ? `_${currentIndex + 1}` : "";
+              const indexSuffix = includeIndexSetting && currentIndex >= 0 ? `_${currentIndex + 1}` : "";
               const now = new Date();
               const dateStr = now.toISOString().split("T")[0].replace(/-/g, "");
               setFieldGeneratedName(
@@ -197,7 +212,7 @@ export const PDFExportModal: React.FC<PDFExportModalProps> = ({
         // 生成字段文件名
         const rawValue = value || optionValue || "document";
         const cleanFilename = sanitizeFilename(rawValue, 30);
-        const indexSuffix = currentIndex >= 0 ? `_${currentIndex + 1}` : "";
+        const indexSuffix = includeIndex && currentIndex >= 0 ? `_${currentIndex + 1}` : "";
         const now = new Date();
         const dateStr = now.toISOString().split("T")[0].replace(/-/g, "");
         setFieldGeneratedName(`${cleanFilename}${indexSuffix}_${dateStr}`);
@@ -205,6 +220,33 @@ export const PDFExportModal: React.FC<PDFExportModalProps> = ({
     } else {
       setSelectedFieldValue("");
       setFieldGeneratedName("");
+    }
+  };
+
+  // 处理序号设置变化
+  const handleIndexToggle = (include: boolean) => {
+    setIncludeIndex(include);
+    saveIndexSetting(include);
+
+    // 重新生成文件名
+    const indexSuffix = include && currentIndex >= 0 ? `_${currentIndex + 1}` : "";
+    const now = new Date();
+    const dateStr = now.toISOString().split("T")[0].replace(/-/g, "");
+
+    // 更新自定义名称
+    const newCustomName = fieldName && currentIndex >= 0
+      ? `${fieldName}${indexSuffix}_${dateStr}`
+      : `markdown-preview_${dateStr}`;
+    setCustomName(newCustomName);
+
+    // 如果选择了字段，更新字段生成的名称
+    if (selectedOption !== "custom") {
+      const option = selectOptions.find((opt) => opt.value === selectedOption);
+      if (option && option.fieldId) {
+        const rawValue = _selectedFieldValue || selectedOption || "document";
+        const cleanFilename = sanitizeFilename(rawValue, 30);
+        setFieldGeneratedName(`${cleanFilename}${indexSuffix}_${dateStr}`);
+      }
     }
   };
 
@@ -441,6 +483,54 @@ export const PDFExportModal: React.FC<PDFExportModalProps> = ({
               </div>
             </Listbox>
           </div>
+
+          {/* 序号设置 */}
+          {currentIndex >= 0 && (
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">
+                {t("pdfExport.includeIndex")}
+              </label>
+              <div className="flex items-center space-x-3">
+                <button
+                  type="button"
+                  onClick={() => handleIndexToggle(false)}
+                  className={`inline-flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
+                    !includeIndex
+                      ? isDarkMode
+                        ? "bg-indigo-600 text-white"
+                        : "bg-indigo-500 text-white"
+                      : isDarkMode
+                      ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  {t("pdfExport.noIndex")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleIndexToggle(true)}
+                  className={`inline-flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
+                    includeIndex
+                      ? isDarkMode
+                        ? "bg-indigo-600 text-white"
+                        : "bg-indigo-500 text-white"
+                      : isDarkMode
+                      ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  {t("pdfExport.withIndex")}
+                </button>
+                <span
+                  className={`text-xs ${
+                    isDarkMode ? "text-gray-400" : "text-gray-500"
+                  }`}
+                >
+                  ({t("pdfExport.indexExample", { index: currentIndex + 1 })})
+                </span>
+              </div>
+            </div>
+          )}
 
           {/* 统一的文件名输入 */}
           <div className="space-y-2">

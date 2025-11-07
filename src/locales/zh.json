@@ -65,7 +65,11 @@
     "nameSource": "文件名来源",
     "customFileName": "自定义文件名",
     "generatedFileName": "生成的文件名",
-    "generatedFromField": "基于字段自动生成"
+    "generatedFromField": "基于字段自动生成",
+    "includeIndex": "序号设置",
+    "noIndex": "不含序号",
+    "withIndex": "包含序号",
+    "indexExample": "如: _{{index}}"
   },
   "errors": {
     "processingMarkdown": "处理 Markdown 内容时出错",
