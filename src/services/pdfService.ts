@@ -169,7 +169,7 @@ const forceLightModeForPDF = (element: HTMLElement): void => {
       font-size: 0.875rem !important;
     }
     
-    p, li, td, th, span, div {
+    p, li, td, th {
       color: #374151 !important;
       line-height: 1.7 !important;
     }
@@ -355,6 +355,23 @@ const fixPDFDisplayIssues = (element: HTMLElement): void => {
     (ul as HTMLElement).style.setProperty("padding-left", "1rem", "important");
   });
 
+  // 修复 KaTeX 分数线 - 使用 DOM 操作替代脆弱的 CSS border
+  const fracLines = element.querySelectorAll(".katex .mfrac .frac-line");
+  console.log(`找到 ${fracLines.length} 个分数线`);
+  fracLines.forEach((line) => {
+    const el = line as HTMLElement;
+    // 强制使用显式样式，避免 html2canvas 渲染边框问题
+    el.style.setProperty("border-bottom", "none", "important");
+    el.style.setProperty("height", "1px", "important"); // 稍微增加高度确保可见
+    el.style.setProperty("min-height", "1px", "important");
+    el.style.setProperty("background-color", "#374151", "important");
+    el.style.setProperty("display", "block", "important");
+    el.style.setProperty("width", "100%", "important");
+    // 确保不被其他样式覆盖
+    el.style.setProperty("opacity", "1", "important");
+    el.style.setProperty("visibility", "visible", "important");
+  });
+
   console.log("PDF显示问题修复完成");
 };
 
@@ -522,6 +539,37 @@ const addPDFStyles = (element: HTMLElement): void => {
     p {
       orphans: 3 !important;
       widows: 3 !important;
+    }
+
+    /* KaTeX 公式修复 - 保护内部样式不被全局样式破坏 */
+    .katex, .katex * {
+      line-height: 1.2 !important;
+      font-family: KaTeX_Main, 'Times New Roman', serif !important;
+      border-color: currentColor;
+    }
+
+    /* 分数线修复 - 确保可见且位置正确 */
+    .katex .mfrac .frac-line {
+      border-bottom: none !important;
+      background-color: #374151 !important;
+      height: 1px !important;
+      min-height: 1px !important;
+      display: inline-block !important;
+    }
+
+    .katex .frac-line:before {
+      display: none !important;
+    }
+
+    /* 确保数学公式清晰度 */
+    .katex {
+      font-size: 1.1em !important;
+      text-rendering: geometricPrecision !important;
+    }
+    
+    /* 根号线修复 */
+    .katex .sqrt > .root {
+      margin-top: -1px !important;
     }
   `;
 
