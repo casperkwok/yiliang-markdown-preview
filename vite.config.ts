@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: './',   
+  base: './',
   plugins: [
     react(),
     tailwindcss(),
@@ -17,12 +17,13 @@ export default defineConfig({
   build: {
     // Increase the chunk size warning limit to 1000kb
     chunkSizeWarningLimit: 1000,
+    outDir: 'dist',
     rollupOptions: {
       output: {
         manualChunks: {
           // React core
           'react-vendor': ['react', 'react-dom'],
-          
+
           // Milkdown editor - group all milkdown packages
           'milkdown': [
             '@milkdown/core',
@@ -45,13 +46,13 @@ export default defineConfig({
             '@milkdown/theme-nord',
             '@milkdown/utils'
           ],
-          
+
           // Diagram and math rendering
           'diagram-math': ['mermaid', 'katex'],
-          
+
           // PDF generation
           'pdf-vendor': ['html2pdf.js'],
-          
+
           // Markdown processing
           'markdown-vendor': [
             'marked',
@@ -62,16 +63,16 @@ export default defineConfig({
             'rehype-katex',
             'rehype-raw'
           ],
-          
+
           // Syntax highlighting
           'syntax-vendor': ['prismjs'],
-          
+
           // UI and icons
           'ui-vendor': ['react-icons', '@tailwindcss/typography'],
-          
+
           // Internationalization
           'i18n-vendor': ['i18next', 'react-i18next'],
-          
+
           // Lark SDK
           'lark-vendor': ['@lark-base-open/js-sdk']
         }

@@ -3,6 +3,7 @@
   "private": true,
   "version": "2.0.4",
   "type": "module",
+  "output": "dist",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
