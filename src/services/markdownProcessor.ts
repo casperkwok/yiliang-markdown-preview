@@ -37,58 +37,6 @@ export class MarkdownProcessor {
     return str.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
   }
 
-  private applyTemplateStyles(html: string): string {
-    const options = this.template.options;
-
-    // Apply styles to various elements
-    const styleMap = {
-      'h1': options.block.h1,
-      'h2': options.block.h2,
-      'h3': options.block.h3,
-      'h4': options.block.h4,
-      'h5': options.block.h5,
-      'h6': options.block.h6,
-      'p': options.block.p,
-      'blockquote': options.block.blockquote,
-      'pre': options.block.code_pre,
-      'code': options.inline.codespan,
-      'img': options.block.image,
-      'ol': options.block.ol,
-      'ul': options.block.ul,
-      'li': options.inline.listitem,
-      'strong': options.inline.strong,
-      'em': options.inline.em,
-      'a': options.inline.link,
-      'table': options.block.table,
-      'thead': options.block.thead,
-      'td': options.block.td,
-      'th': options.block.td,
-    };
-
-    // Apply styles to each element type
-    Object.entries(styleMap).forEach(([tag, styles]) => {
-      const styleString = this.getStylesForElement(styles);
-      const regex = new RegExp(`<${tag}([^>]*)>`, 'g');
-      html = html.replace(regex, (match, attributes) => {
-        const existingStyle = attributes.match(/style="([^"]*)"/);
-        const newStyle = existingStyle
-          ? `style="${existingStyle[1]}; ${styleString}"`
-          : `style="${styleString}"`;
-
-        if (existingStyle) {
-          return match.replace(/style="[^"]*"/, newStyle);
-        } else {
-          return `<${tag}${attributes} ${newStyle}>`;
-        }
-      });
-    });
-
-    // Add code theme class to pre elements
-    const codeThemeClass = getCodeThemeClassName(this.codeTheme);
-    html = html.replace(/<pre([^>]*)>/g, `<pre$1 class="${codeThemeClass}">`);
-
-    return html;
-  }
 
   public process(markdown: string): string {
     if (!markdown.trim()) {
@@ -102,9 +50,6 @@ export class MarkdownProcessor {
       // Process markdown to HTML
       let html = marked(processedMarkdown) as string;
 
-      // Apply template styles
-      // 已废弃 inline style 注入，改用 CSS 类 (.default-template) 控制样式以获得更好的排版和性能
-      // html = this.applyTemplateStyles(html);
 
       // Apply template transform if available
       if (this.template.transform) {
@@ -115,7 +60,8 @@ export class MarkdownProcessor {
       // Wrap with base styles
       const baseStyles = this.getStylesForElement(this.template.options.base);
       const darkClass = this.isDarkMode ? ' dark' : '';
-      html = `<div class="markdown-preview ${this.template.styles}${darkClass}" style="${baseStyles}">${html}</div>`;
+      const codeThemeClass = getCodeThemeClassName(this.codeTheme);
+      html = `<div class="markdown-preview ${this.template.styles} ${codeThemeClass}${darkClass}" style="${baseStyles}">${html}</div>`;
 
       return html;
     } catch (error) {
