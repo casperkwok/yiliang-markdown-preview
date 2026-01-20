@@ -7,7 +7,7 @@
  */
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { FiX, FiDownload } from "react-icons/fi";
+import { FiX, FiDownload, FiPaperclip } from "react-icons/fi";
 import { Listbox, Transition } from "@headlessui/react";
 import {
   ChevronUpDownIcon,
@@ -18,6 +18,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useThemeContext } from "../hooks/useThemeContext";
 import { larkBaseService } from "../services/larkBase";
+import { exportRemotePDF } from "../services/remotePdfService";
 
 interface PDFExportModalProps {
   isOpen: boolean;
@@ -61,6 +62,8 @@ export const PDFExportModal: React.FC<PDFExportModalProps> = ({
   const [loadingFieldValue, setLoadingFieldValue] = useState(false);
   const [selectOptions, setSelectOptions] = useState<SelectOption[]>([]);
   const [includeIndex, setIncludeIndex] = useState<boolean>(false);
+  // 新增：保存附件状态
+  const [isSavingToAttachment, setIsSavingToAttachment] = useState(false);
 
   // 记忆用户选择的字段（使用localStorage）
   const STORAGE_KEY = "pdf-export-selected-field";
@@ -266,9 +269,60 @@ export const PDFExportModal: React.FC<PDFExportModalProps> = ({
     return truncated.replace(/[<>:"/\\|?*]/g, "_");
   };
 
+  // 处理保存到附件
+  const handleSaveToAttachment = async () => {
+    if (isSavingToAttachment || isExporting) return;
+
+    let filename = "";
+    if (selectedOption === "custom") {
+      filename = customName.trim();
+    } else {
+      filename = fieldGeneratedName.trim();
+    }
+
+    if (!filename) filename = "markdown-preview";
+    if (!filename.endsWith(".pdf")) filename += ".pdf";
+
+    try {
+      setIsSavingToAttachment(true);
+
+      // 1. 生成 PDF Blob
+      const result = await exportRemotePDF("preview-content", {
+        filename,
+        returnBlob: true,
+      });
+
+      if (!result.success || !result.blob) {
+        throw new Error(result.message || "PDF 生成失败");
+      }
+
+      // 2. 将 Blob 转换为 File 对象
+      const file = new File([result.blob], filename, { type: "application/pdf" });
+
+      // 3. 上传到飞书附件
+      const saveResult = await larkBaseService.saveToAttachment(
+        file,
+        recordId
+      );
+
+      if (saveResult.success) {
+        // 可以根据实际情况替换为更友好的 Toast
+        console.log(saveResult.message);
+        onClose();
+      } else {
+        console.error("保存失败: " + saveResult.message);
+      }
+
+    } catch (error) {
+      console.error("Save to attachment failed:", error);
+    } finally {
+      setIsSavingToAttachment(false);
+    }
+  };
+
   // 处理导出
   const handleExport = async () => {
-    if (isExporting) return;
+    if (isExporting || isSavingToAttachment) return;
 
     let filename = "";
 
@@ -303,7 +357,8 @@ export const PDFExportModal: React.FC<PDFExportModalProps> = ({
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Escape") {
       onClose();
-    } else if (e.key === "Enter" && !isExporting) {
+    } else if (e.key === "Enter" && !isExporting && !isSavingToAttachment) {
+      // 默认回车只触发普通导出，因为保存到附件可能比较重
       handleExport();
     }
   };
@@ -319,16 +374,14 @@ export const PDFExportModal: React.FC<PDFExportModalProps> = ({
       tabIndex={-1}
     >
       <div
-        className={`w-80 rounded-lg shadow-xl ${
-          isDarkMode ? "bg-gray-800 text-white" : "bg-white text-gray-900"
-        }`}
+        className={`w-80 rounded-lg shadow-xl ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-gray-900"
+          }`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* 头部 */}
         <div
-          className={`flex items-center justify-between p-4 border-b ${
-            isDarkMode ? "border-gray-700" : "border-gray-200"
-          }`}
+          className={`flex items-center justify-between p-4 border-b ${isDarkMode ? "border-gray-700" : "border-gray-200"
+            }`}
         >
           <div className="flex items-center">
             <FiDownload className="w-4 h-4 mr-2 text-indigo-500" />
@@ -336,9 +389,8 @@ export const PDFExportModal: React.FC<PDFExportModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className={`p-1 rounded hover:bg-gray-100 ${
-              isDarkMode ? "hover:bg-gray-700" : ""
-            }`}
+            className={`p-1 rounded hover:bg-gray-100 ${isDarkMode ? "hover:bg-gray-700" : ""
+              }`}
           >
             <FiX className="w-4 h-4" />
           </button>
@@ -358,11 +410,10 @@ export const PDFExportModal: React.FC<PDFExportModalProps> = ({
             >
               <div className="relative">
                 <Listbox.Button
-                  className={`relative w-full cursor-default rounded-lg py-2 pl-3 pr-10 text-left shadow-sm border focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm ${
-                    isDarkMode
+                  className={`relative w-full cursor-default rounded-lg py-2 pl-3 pr-10 text-left shadow-sm border focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm ${isDarkMode
                       ? "bg-gray-700 border-gray-600 text-white"
                       : "bg-white border-gray-300 text-gray-900"
-                  } ${loadingFields ? "opacity-50 cursor-not-allowed" : ""}`}
+                    } ${loadingFields ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                   <div className="flex items-center">
                     {!loadingFields && (
@@ -383,15 +434,14 @@ export const PDFExportModal: React.FC<PDFExportModalProps> = ({
                       {loadingFields
                         ? t("pdfExport.loadingFields")
                         : selectOptions.find(
-                            (opt) => opt.value === selectedOption
-                          )?.label || t("pdfExport.customName")}
+                          (opt) => opt.value === selectedOption
+                        )?.label || t("pdfExport.customName")}
                     </span>
                   </div>
                   <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                     <ChevronUpDownIcon
-                      className={`h-5 w-5 ${
-                        isDarkMode ? "text-gray-400" : "text-gray-400"
-                      }`}
+                      className={`h-5 w-5 ${isDarkMode ? "text-gray-400" : "text-gray-400"
+                        }`}
                       aria-hidden="true"
                     />
                   </span>
@@ -403,23 +453,21 @@ export const PDFExportModal: React.FC<PDFExportModalProps> = ({
                   leaveTo="opacity-0"
                 >
                   <Listbox.Options
-                    className={`absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none ${
-                      isDarkMode
+                    className={`absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none ${isDarkMode
                         ? "bg-gray-700 border-gray-600"
                         : "bg-white border-gray-300"
-                    }`}
+                      }`}
                   >
                     {!loadingFields &&
                       selectOptions.map((option) => (
                         <Listbox.Option
                           key={option.value}
                           className={({ active }) =>
-                            `relative cursor-default select-none py-2.5 pl-10 pr-4 ${
-                              active
-                                ? isDarkMode
-                                  ? "bg-gray-600 text-white"
-                                  : "bg-indigo-100 text-indigo-900"
-                                : isDarkMode
+                            `relative cursor-default select-none py-2.5 pl-10 pr-4 ${active
+                              ? isDarkMode
+                                ? "bg-gray-600 text-white"
+                                : "bg-indigo-100 text-indigo-900"
+                              : isDarkMode
                                 ? "text-gray-200"
                                 : "text-gray-900"
                             }`
@@ -430,15 +478,14 @@ export const PDFExportModal: React.FC<PDFExportModalProps> = ({
                             <>
                               <div className="flex items-center">
                                 <span
-                                  className={`mr-3 flex-shrink-0 ${
-                                    active
+                                  className={`mr-3 flex-shrink-0 ${active
                                       ? isDarkMode
                                         ? "text-white"
                                         : "text-indigo-600"
                                       : isDarkMode
-                                      ? "text-gray-400"
-                                      : "text-gray-400"
-                                  }`}
+                                        ? "text-gray-400"
+                                        : "text-gray-400"
+                                    }`}
                                 >
                                   {option.type === "custom" ? (
                                     <PencilIcon
@@ -453,20 +500,18 @@ export const PDFExportModal: React.FC<PDFExportModalProps> = ({
                                   )}
                                 </span>
                                 <span
-                                  className={`block truncate ${
-                                    selected ? "font-medium" : "font-normal"
-                                  }`}
+                                  className={`block truncate ${selected ? "font-medium" : "font-normal"
+                                    }`}
                                 >
                                   {option.label}
                                 </span>
                               </div>
                               {selected ? (
                                 <span
-                                  className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                                    isDarkMode
+                                  className={`absolute inset-y-0 left-0 flex items-center pl-3 ${isDarkMode
                                       ? "text-indigo-400"
                                       : "text-indigo-600"
-                                  }`}
+                                    }`}
                                 >
                                   <CheckIcon
                                     className="h-4 w-4"
@@ -494,37 +539,34 @@ export const PDFExportModal: React.FC<PDFExportModalProps> = ({
                 <button
                   type="button"
                   onClick={() => handleIndexToggle(false)}
-                  className={`inline-flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
-                    !includeIndex
+                  className={`inline-flex items-center px-3 py-2 text-sm rounded-md transition-colors ${!includeIndex
                       ? isDarkMode
                         ? "bg-indigo-600 text-white"
                         : "bg-indigo-500 text-white"
                       : isDarkMode
-                      ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
+                        ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
                 >
                   {t("pdfExport.noIndex")}
                 </button>
                 <button
                   type="button"
                   onClick={() => handleIndexToggle(true)}
-                  className={`inline-flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
-                    includeIndex
+                  className={`inline-flex items-center px-3 py-2 text-sm rounded-md transition-colors ${includeIndex
                       ? isDarkMode
                         ? "bg-indigo-600 text-white"
                         : "bg-indigo-500 text-white"
                       : isDarkMode
-                      ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
+                        ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
                 >
                   {t("pdfExport.withIndex")}
                 </button>
                 <span
-                  className={`text-xs ${
-                    isDarkMode ? "text-gray-400" : "text-gray-500"
-                  }`}
+                  className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-500"
+                    }`}
                 >
                   ({t("pdfExport.indexExample", { index: currentIndex + 1 })})
                 </span>
@@ -558,17 +600,15 @@ export const PDFExportModal: React.FC<PDFExportModalProps> = ({
                     : t("pdfExport.generatedFromField")
                 }
                 disabled={loadingFieldValue}
-                className={`w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors ${
-                  isDarkMode
+                className={`w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors ${isDarkMode
                     ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
                     : "bg-white border-gray-300 text-gray-900 placeholder-gray-500"
-                } ${loadingFieldValue ? "opacity-75 cursor-not-allowed" : ""}`}
+                  } ${loadingFieldValue ? "opacity-75 cursor-not-allowed" : ""}`}
               />
               <div className="absolute inset-y-0 right-0 flex items-center pr-3">
                 <span
-                  className={`text-xs ${
-                    isDarkMode ? "text-gray-400" : "text-gray-500"
-                  }`}
+                  className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-500"
+                    }`}
                 >
                   .pdf
                 </span>
@@ -579,39 +619,67 @@ export const PDFExportModal: React.FC<PDFExportModalProps> = ({
 
         {/* 底部按钮 */}
         <div
-          className={`flex justify-end space-x-2 p-4 border-t ${
-            isDarkMode ? "border-gray-700" : "border-gray-200"
-          }`}
+          className={`flex justify-end space-x-2 p-4 border-t ${isDarkMode ? "border-gray-700" : "border-gray-200"
+            }`}
         >
           <button
             onClick={onClose}
-            disabled={isExporting}
-            className={`px-3 py-1.5 text-sm rounded transition-colors ${
-              isDarkMode
+            disabled={isExporting || isSavingToAttachment}
+            className={`px-3 py-1.5 text-sm rounded transition-colors ${isDarkMode
                 ? "text-gray-300 hover:bg-gray-700"
                 : "text-gray-600 hover:bg-gray-100"
-            }`}
+              }`}
           >
             {t("pdfExport.cancel")}
           </button>
+
+          {/* 新增：保存到附件按钮 */}
           <button
-            onClick={handleExport}
+            onClick={handleSaveToAttachment}
             disabled={
               isExporting ||
+              isSavingToAttachment ||
               loadingFields ||
               loadingFieldValue ||
               (selectedOption === "custom" && !customName.trim()) ||
               (selectedOption !== "custom" && !fieldGeneratedName.trim())
             }
-            className={`px-3 py-1.5 text-sm text-white rounded transition-colors flex items-center ${
+            className={`px-3 py-1.5 text-sm rounded transition-colors flex items-center border ${isDarkMode
+                ? "border-gray-600 text-gray-200 hover:bg-gray-700"
+                : "border-gray-300 text-gray-700 hover:bg-gray-50 bg-white"
+              } ${isExporting || isSavingToAttachment ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            title={t("pdfExport.saveToAttachment") || "保存到附件字段"}
+          >
+            {isSavingToAttachment ? (
+              <>
+                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-current mr-1.5"></div>
+              </>
+            ) : (
+              <FiPaperclip className="w-3 h-3 scale-110" />
+            )}
+            <span className="ml-1.5">{t("pdfExport.saveToAttachment") || "保存到附件"}</span>
+          </button>
+
+          <button
+            onClick={handleExport}
+            disabled={
               isExporting ||
+              isSavingToAttachment ||
               loadingFields ||
               loadingFieldValue ||
               (selectedOption === "custom" && !customName.trim()) ||
               (selectedOption !== "custom" && !fieldGeneratedName.trim())
+            }
+            className={`px-3 py-1.5 text-sm text-white rounded transition-colors flex items-center ${isExporting ||
+                isSavingToAttachment ||
+                loadingFields ||
+                loadingFieldValue ||
+                (selectedOption === "custom" && !customName.trim()) ||
+                (selectedOption !== "custom" && !fieldGeneratedName.trim())
                 ? "bg-indigo-300 cursor-not-allowed"
                 : "bg-indigo-500 hover:bg-indigo-600"
-            }`}
+              }`}
           >
             {isExporting ? (
               <>

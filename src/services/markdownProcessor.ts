@@ -39,7 +39,7 @@ export class MarkdownProcessor {
 
   private applyTemplateStyles(html: string): string {
     const options = this.template.options;
-    
+
     // Apply styles to various elements
     const styleMap = {
       'h1': options.block.h1,
@@ -71,10 +71,10 @@ export class MarkdownProcessor {
       const regex = new RegExp(`<${tag}([^>]*)>`, 'g');
       html = html.replace(regex, (match, attributes) => {
         const existingStyle = attributes.match(/style="([^"]*)"/);
-        const newStyle = existingStyle 
-          ? `style="${existingStyle[1]}; ${styleString}"` 
+        const newStyle = existingStyle
+          ? `style="${existingStyle[1]}; ${styleString}"`
           : `style="${styleString}"`;
-        
+
         if (existingStyle) {
           return match.replace(/style="[^"]*"/, newStyle);
         } else {
@@ -98,12 +98,13 @@ export class MarkdownProcessor {
     try {
       // Pre-process Mermaid blocks to prevent them from being treated as code blocks
       const processedMarkdown = this.preprocessMermaidBlocks(markdown);
-      
+
       // Process markdown to HTML
       let html = marked(processedMarkdown) as string;
 
       // Apply template styles
-      html = this.applyTemplateStyles(html);
+      // 已废弃 inline style 注入，改用 CSS 类 (.default-template) 控制样式以获得更好的排版和性能
+      // html = this.applyTemplateStyles(html);
 
       // Apply template transform if available
       if (this.template.transform) {
@@ -128,11 +129,11 @@ export class MarkdownProcessor {
     // Updated regex to handle cases where closing ``` might be missing or at the end
     const mermaidRegex = /```mermaid\s*\n([\s\S]*?)(?:\n```|$)/g;
     let diagramCounter = 0;
-    
+
     return markdown.replace(mermaidRegex, (_, diagramText) => {
       const diagramId = `mermaid-diagram-${Date.now()}-${++diagramCounter}`;
       const encodedText = encodeURIComponent(diagramText.trim());
-      
+
       return `<div class="mermaid-diagram" data-diagram-id="${diagramId}" data-diagram-text="${encodedText}">
         <div class="mermaid-loading" style="color: var(--text-color, #666); font-style: italic;">Loading diagram...</div>
       </div>`;

@@ -6,7 +6,7 @@
  * @description PDF导出Hook，使用html2pdf.js服务
  */
 import { useCallback } from "react";
-import { exportPreviewToPDF } from "../services/pdfService";
+import { exportRemotePDF } from "../services/remotePdfService";
 
 interface ExportResult {
   success: boolean;
@@ -17,9 +17,12 @@ export const usePDFExport = () => {
   const handleExport = useCallback(
     async (filename: string): Promise<ExportResult> => {
       try {
-        // 调用PDF服务导出
-        const result = await exportPreviewToPDF(filename);
+        // 切换到远程后端生成服务，实现“点击即下载”且样式完美
+        const result = await exportRemotePDF("preview-content", {
+          filename,
+        });
 
+        // 成功处理由 remotePdfService 内部处理 (包括触发下载)
         return result;
       } catch (error) {
         console.error("PDF export error:", error);

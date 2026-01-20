@@ -372,6 +372,63 @@ const fixPDFDisplayIssues = (element: HTMLElement): void => {
     el.style.setProperty("visibility", "visible", "important");
   });
 
+  // 移除所有红色高亮框 - 包括边框和背景
+  console.log("移除红色高亮框...");
+  const allElements = element.querySelectorAll("*");
+  allElements.forEach((el) => {
+    const htmlEl = el as HTMLElement;
+    const computedStyle = window.getComputedStyle(htmlEl);
+
+    // 检测并移除红色边框
+    if (computedStyle.borderColor && computedStyle.borderColor.includes("rgb(255, 0, 0)") ||
+      computedStyle.borderColor && computedStyle.borderColor.includes("red")) {
+      htmlEl.style.setProperty("border", "none", "important");
+      htmlEl.style.setProperty("outline", "none", "important");
+      console.log(`  - 移除元素红色边框: ${htmlEl.tagName}`);
+    }
+
+    // 检测并移除红色背景
+    if (computedStyle.backgroundColor && (computedStyle.backgroundColor.includes("rgba(255, 0, 0") ||
+      computedStyle.backgroundColor.includes("rgb(255, 0, 0"))) {
+      htmlEl.style.setProperty("background-color", "transparent", "important");
+      console.log(`  - 移除元素红色背景: ${htmlEl.tagName}`);
+    }
+  });
+
+  // 处理命题编号样式（命题①、命题②等）
+  console.log("处理命题编号样式...");
+  const textNodes: Node[] = [];
+  const walker = document.createTreeWalker(
+    element,
+    NodeFilter.SHOW_TEXT,
+    null
+  );
+
+  let node;
+  while (node = walker.nextNode()) {
+    textNodes.push(node);
+  }
+
+  textNodes.forEach((textNode) => {
+    const text = textNode.textContent || "";
+    // 匹配 "命题①" 等模式
+    const pattern = /命题([①②③④⑤⑥⑦⑧⑨⑩])/g;
+    if (pattern.test(text)) {
+      const parent = textNode.parentElement;
+      if (parent) {
+        // 用带样式的 HTML 替换文本
+        const newHTML = text.replace(
+          /命题([①②③④⑤⑥⑦⑧⑨⑩])/g,
+          '<strong style="color: #dc2626;">命题<span style="display: inline-block; color: #dc2626;">$1</span></strong>'
+        );
+        const span = document.createElement("span");
+        span.innerHTML = newHTML;
+        parent.replaceChild(span, textNode);
+        console.log(`  - 样式化命题编号: ${text}`);
+      }
+    }
+  });
+
   console.log("PDF显示问题修复完成");
 };
 
@@ -565,11 +622,31 @@ const addPDFStyles = (element: HTMLElement): void => {
     .katex {
       font-size: 1.1em !important;
       text-rendering: geometricPrecision !important;
+      margin: 0.2em 0 !important;
     }
     
     /* 根号线修复 */
     .katex .sqrt > .root {
       margin-top: -1px !important;
+    }
+
+    /* 移除所有红色边框和高亮 */
+    * {
+      border-color: currentColor !important;
+    }
+    
+    *[style*="border"][style*="red"],
+    *[style*="border-color"][style*="red"] {
+      border: none !important;
+    }
+    
+    *[style*="background"][style*="red"] {
+      background: transparent !important;
+    }
+
+    /* 命题编号样式 - 红色显示 */
+    strong:has(span) {
+      color: #dc2626 !important;
     }
   `;
 

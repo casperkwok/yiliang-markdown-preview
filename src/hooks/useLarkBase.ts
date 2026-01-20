@@ -30,7 +30,7 @@ export const useLarkBase = () => {
     const [currentIndex, setCurrentIndex] = useState(-1);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
-    
+
     // Update fieldName when language changes
     useEffect(() => {
         setSelection(prev => ({
@@ -38,7 +38,7 @@ export const useLarkBase = () => {
             fieldName: prev.fieldId ? prev.fieldName : t('common.selectCellPlaceholder')
         }));
     }, [t]);
-    
+
     // 使用ref来存储最新的recordIds，避免依赖问题
     const recordIdsRef = useRef<string[]>([]);
     recordIdsRef.current = recordIds;
@@ -77,13 +77,13 @@ export const useLarkBase = () => {
         try {
             setLoading(true);
             await larkBaseService.setCellContent(selection.fieldId, selection.recordId, content);
-            
+
             // 更新本地状态
             setSelection(prev => ({
                 ...prev,
                 content
             }));
-            
+
             setError(null);
             return true;
         } catch (err) {
@@ -106,20 +106,39 @@ export const useLarkBase = () => {
         }
     }, [t]);
 
+    // 竞态条件控制
+    const currentRequestId = useRef(0);
+
     // 处理选区变化
     const handleSelectionChange = useCallback(async (event: { data: { fieldId: string | null; recordId: string | null } }) => {
         const { fieldId, recordId } = event.data;
+
+        // 如果没有选区，清空状态（但保留 fieldName 占位符）
         if (!fieldId || !recordId) return;
 
+        // 生成新的请求ID，这会立即使之前所有未完成的请求的回调失效
+        const reqId = ++currentRequestId.current;
+
         try {
+            // 只有当完全切换了选区时才显示全屏/大 Loading，
+            // 如果只是在浏览记录，可以考虑更轻量的 Loading 体验（这里暂时保持现有逻辑）
             setLoading(true);
-            
-            // 获取字段名称和单元格内容
-            const [fieldName, content] = await Promise.all([
-                getFieldName(fieldId),
-                getCellContent(fieldId, recordId)
-            ]);
-            
+
+            // 优化1: 复用 Field Name
+            let fieldName = selection.fieldName;
+            if (fieldId !== selection.fieldId) {
+                fieldName = await getFieldName(fieldId);
+            }
+
+            // 检查竞态条件：如果在等待 fieldName 时用户已经切走了，直接丢弃
+            if (reqId !== currentRequestId.current) return;
+
+            // 获取内容
+            const content = await getCellContent(fieldId, recordId);
+
+            // 检查竞态条件：如果在等待 content 时用户已经切走了（又点击了别的），直接丢弃
+            if (reqId !== currentRequestId.current) return;
+
             // 更新选区状态
             setSelection({
                 fieldId,
@@ -128,17 +147,23 @@ export const useLarkBase = () => {
                 fieldName
             });
 
-            // 更新当前索引
+            // 更新当前索引 (这个操作开销很小且同步，可以直接做)
             const index = recordIdsRef.current.indexOf(recordId);
             setCurrentIndex(Math.max(index, -1));
-            
+
             setError(null);
         } catch (err) {
+            // 同样需要检查竞态条件，如果是旧请求的错误，忽略它
+            if (reqId !== currentRequestId.current) return;
+
             setError(err instanceof Error ? err : new Error(t('errors.updateCellContent')));
         } finally {
-            setLoading(false);
+            // 只有当这是最新的请求完成时，才关闭 Loading
+            if (reqId === currentRequestId.current) {
+                setLoading(false);
+            }
         }
-    }, [getCellContent, getFieldName, t]);
+    }, [getCellContent, getFieldName, t, selection.fieldId, selection.fieldName]);
 
     // 导航记录
     const switchRecord = useCallback(async (direction: 'prev' | 'next') => {
@@ -157,12 +182,18 @@ export const useLarkBase = () => {
         const recordId = recordIdsRef.current[newIndex];
         if (!recordId) return;
 
+        // 使用同一个请求计数器处理竞态
+        const reqId = ++currentRequestId.current;
+
         try {
             setLoading(true);
-            
+
             // 获取新记录的单元格内容
             const content = await getCellContent(selection.fieldId, recordId);
-            
+
+            // 竞态检查
+            if (reqId !== currentRequestId.current) return;
+
             // 更新选区状态
             setSelection(prev => ({
                 ...prev,
@@ -170,12 +201,15 @@ export const useLarkBase = () => {
                 content
             }));
             setCurrentIndex(newIndex);
-            
+
             setError(null);
         } catch (err) {
+            if (reqId !== currentRequestId.current) return;
             setError(err instanceof Error ? err : new Error(t('errors.updateCellContent')));
         } finally {
-            setLoading(false);
+            if (reqId === currentRequestId.current) {
+                setLoading(false);
+            }
         }
     }, [selection.fieldId, selection.recordId, getCellContent, t]);
 
@@ -183,10 +217,10 @@ export const useLarkBase = () => {
     useEffect(() => {
         // 获取记录列表
         getRecordIds();
-        
+
         // 监听选区变化
         const unsubscribe = larkBaseService.onSelectionChange(handleSelectionChange);
-        
+
         return () => {
             unsubscribe();
         };
@@ -199,7 +233,7 @@ export const useLarkBase = () => {
         currentIndex,
         loading,
         error,
-        
+
         // 方法
         switchRecord,
         getCellContent,
